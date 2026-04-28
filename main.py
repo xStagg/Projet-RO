@@ -1,8 +1,8 @@
+
 import sys
 import os
 from nordouest   import nord_ouest
 from balashammer import balas_hammer
-
 
 #  1. LECTURE ET STOCKAGE EN MEMOIRE
 
@@ -56,7 +56,6 @@ def _max_abs(liste_2d):
     return m
 
 
-
 def _tableau(titre,
              lignes_donnees,
              entete_cols,
@@ -96,7 +95,6 @@ def _tableau(titre,
     print()
 
 
-
 #  2a. MATRICE DES COUTS
 
 
@@ -126,8 +124,6 @@ def afficher_matrice_couts(n, m, couts, provisions, commandes):
         largeur_lbl    = w_lbl,
         pied_ligne     = pied
     )
-
-
 
 #  2b. PROPOSITION DE TRANSPORT
 
@@ -296,23 +292,40 @@ def afficher_table_marginaux(n, m, couts, proposition, u, v):
 
 
 
-#  CALCUL DU COUT TOTAL
+#  5. CALCUL DU COUT TOTAL
 
 
 def cout_total(n, m, couts, proposition):
-    total = 0
+
+    Z = 0
     for i in range(n):
         for j in range(m):
             if proposition[i][j] > 0:
-                total += couts[i][j] * proposition[i][j]
-    return total
+                Z += couts[i][j] * proposition[i][j]
+    return Z
 
 
 def afficher_cout_total(n, m, couts, proposition):
-    ct = cout_total(n, m, couts, proposition)
-    print("  Cout total de transport : " + str(ct))
+
     print()
-    return ct
+    print("  CALCUL DU COUT TOTAL")
+    print("  " + "-" * 44)
+
+    Z = 0
+    for i in range(n):
+        for j in range(m):
+            if proposition[i][j] > 0:
+                contrib  = couts[i][j] * proposition[i][j]
+                Z       += contrib
+                print("  (P" + str(i+1) + ", C" + str(j+1) + ")"
+                      + "   :   cout=" + str(couts[i][j]).rjust(4)
+                      + "  x  qte=" + str(proposition[i][j]).rjust(5)
+                      + "   =  " + str(contrib).rjust(7))
+
+    print("  " + "-" * 44)
+    print("  Cout total   Z  =  " + str(Z))
+    print()
+    return Z
 
 
 
@@ -366,8 +379,8 @@ def nord_ouest(n, m, provisions, commandes):
     return prop
 
 
-
 #  AFFICHAGE COMPLET D'UN PROBLEME
+
 
 def afficher_tout(n, m, couts, provisions, commandes):
     """Affiche les 4 tableaux pour un probleme charge."""
@@ -402,6 +415,7 @@ def afficher_tout(n, m, couts, provisions, commandes):
 
 
 
+#  MENU
 
 FICHIERS = {
     "1":  "pb1.txt",
