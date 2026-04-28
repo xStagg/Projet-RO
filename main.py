@@ -1,32 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-=============================================================
-  Fonctions de lecture et d'affichage - Probleme de Transport
-  Efrei Paris - Recherche Operationnelle S6
-=============================================================
-"""
-
 import sys
 import os
 
 
-# ==============================================================
+
 #  1. LECTURE ET STOCKAGE EN MEMOIRE
-# ==============================================================
+
 
 def lire_probleme(chemin):
-    """
-    Lit un fichier .txt de probleme de transport.
 
-    Format :
-        n m
-        a[1,1] ... a[1,m]  P1
-        ...
-        a[n,1] ... a[n,m]  Pn
-        C1 C2 ... Cm
-
-    Retourne : (n, m, couts, provisions, commandes)
-    """
     if not os.path.isfile(chemin):
         print("[ERREUR] Fichier introuvable : " + chemin)
         sys.exit(1)
@@ -52,9 +33,7 @@ def lire_probleme(chemin):
     return n, m, couts, provisions, commandes
 
 
-# ==============================================================
-#  UTILITAIRES
-# ==============================================================
+
 
 def _col_width(valeurs_max, extra=2, minimum=6):
     """Largeur de colonne selon la valeur maximale a afficher."""
@@ -76,19 +55,6 @@ def _max_abs(liste_2d):
     return m
 
 
-# ==============================================================
-#  CONSTRUCTION D'UN TABLEAU AVEC ESPACES UNIQUEMENT
-#
-#  Rendu vise :
-#
-#       C1     C2     C3    Provision
-#  P1    30     20     20      450
-#  P2    10     50     20      250
-#  P3    50     40     30      250
-#  P4    30     20     30      450
-#       500    600    300
-#
-# ==============================================================
 
 def _tableau(titre,
              lignes_donnees,
@@ -97,18 +63,7 @@ def _tableau(titre,
              largeurs_cols,
              largeur_lbl,
              pied_ligne=None):
-    """
-    Affiche un tableau aligne avec espaces uniquement.
 
-    Parametres :
-      titre         -- chaine affichee en titre au-dessus
-      lignes_donnees-- liste de listes de chaines (les cellules)
-      entete_cols   -- liste de chaines pour l'en-tete des colonnes
-      entete_lignes -- liste de chaines pour les etiquettes de ligne (P1, P2...)
-      largeurs_cols -- liste de largeurs pour chaque colonne de donnees
-      largeur_lbl   -- largeur de la colonne etiquette (Px / Commande)
-      pied_ligne    -- liste de chaines pour la derniere ligne (commandes), ou None
-    """
     # Ligne de titre
     total = largeur_lbl + sum(largeurs_cols)
     print()
@@ -140,24 +95,12 @@ def _tableau(titre,
     print()
 
 
-# ==============================================================
+
 #  2a. MATRICE DES COUTS
-# ==============================================================
+
 
 def afficher_matrice_couts(n, m, couts, provisions, commandes):
-    """
-    Affiche la matrice des couts unitaires.
 
-    Exemple :
-                C1     C2     C3    Provision
-    ----------------------------------------
-    P1          30     20     20       450
-    P2          10     50     20       250
-    P3          50     40     30       250
-    P4          30     20     30       450
-    ----------------------------------------
-    Commande   500    600    300
-    """
     val_max  = _max_abs(couts + [provisions] + [commandes])
     w        = _col_width(val_max, extra=2, minimum=6)
     w_prov   = max(w, len("Provision") + 2)
@@ -184,29 +127,13 @@ def afficher_matrice_couts(n, m, couts, provisions, commandes):
     )
 
 
-# ==============================================================
+
 #  2b. PROPOSITION DE TRANSPORT
-# ==============================================================
+
 
 def afficher_proposition(n, m, proposition, provisions, commandes,
                          titre="PROPOSITION DE TRANSPORT"):
-    """
-    Affiche la proposition de transport.
 
-    case vide  (0)  ->  "."
-    degeneree (-1)  ->  "(0)"
-    normale         ->  valeur
-
-    Exemple :
-               C1     C2     C3    Provision
-    -----------------------------------------
-    P1        450      .      .       450
-    P2         50    200      .       250
-    P3          .    250      .       250
-    P4          .    150    300       450
-    -----------------------------------------
-    Commande  500    600    300
-    """
     affichage = []
     for i in range(n):
         row = []
@@ -249,27 +176,12 @@ def afficher_proposition(n, m, proposition, provisions, commandes,
     )
 
 
-# ==============================================================
+
 #  2c. TABLE DES COUTS POTENTIELS
-# ==============================================================
+
 
 def afficher_table_potentiels(n, m, couts, proposition, u, v):
-    """
-    Affiche la table des couts potentiels : u_i + v_j.
 
-    Cases de base   ->  entre crochets  [val]
-    Cases hors base ->  valeur simple
-
-    Exemple :
-                v1=30   v2=70   v3=80
-    ------------------------------------
-    u1=0          [30]     70      80
-    u2=-20        [10]    [50]     60
-    u3=-30          0     [40]     50
-    u4=-50        -20     [20]    [30]
-
-    Legende : [val] = case de base
-    """
     table = [[u[i] + v[j] for j in range(m)] for i in range(n)]
 
     val_max   = _max_abs(table)
@@ -309,31 +221,12 @@ def afficher_table_potentiels(n, m, couts, proposition, u, v):
     print()
 
 
-# ==============================================================
+
 #  2d. TABLE DES COUTS MARGINAUX
-# ==============================================================
+
 
 def afficher_table_marginaux(n, m, couts, proposition, u, v):
-    """
-    Affiche la table des couts marginaux : delta_ij = a_ij - u_i - v_j.
 
-    Cases de base           ->  [BASE]
-    Meilleure arete         ->  >>val<<
-    Autres cases hors base  ->  valeur
-
-    Retourne la meilleure arete ameliorante (i, j) ou None si optimal.
-
-    Exemple :
-               C1       C2       C3
-    ------------------------------------
-    P1       [BASE]     -50    >>-60<<
-    P2       [BASE]    [BASE]    -40
-    P3         50      [BASE]    -20
-    P4         50      [BASE]   [BASE]
-    ------------------------------------
-    Legende : [BASE] = case de base  |  >>val<< = meilleure arete
-    --> Arete ameliorante : (P1, C3)   delta = -60
-    """
     marginaux = []
     meilleur  = None
     val_min   = 0
@@ -401,9 +294,9 @@ def afficher_table_marginaux(n, m, couts, proposition, u, v):
     return meilleur
 
 
-# ==============================================================
+
 #  CALCUL DU COUT TOTAL
-# ==============================================================
+
 
 def cout_total(n, m, couts, proposition):
     total = 0
@@ -421,9 +314,9 @@ def afficher_cout_total(n, m, couts, proposition):
     return ct
 
 
-# ==============================================================
+
 #  CALCUL DES POTENTIELS
-# ==============================================================
+
 
 def calculer_potentiels(n, m, couts, proposition):
     u = [None] * n
@@ -447,9 +340,8 @@ def calculer_potentiels(n, m, couts, proposition):
     return u, v
 
 
-# ==============================================================
 #  PROPOSITION INITIALE NORD-OUEST
-# ==============================================================
+
 
 def nord_ouest(n, m, provisions, commandes):
     prop   = [[0] * m for _ in range(n)]
@@ -473,9 +365,8 @@ def nord_ouest(n, m, provisions, commandes):
     return prop
 
 
-# ==============================================================
+
 #  AFFICHAGE COMPLET D'UN PROBLEME
-# ==============================================================
 
 def afficher_tout(n, m, couts, provisions, commandes):
     """Affiche les 4 tableaux pour un probleme charge."""
@@ -509,9 +400,7 @@ def afficher_tout(n, m, couts, provisions, commandes):
     afficher_table_marginaux(n, m, couts, prop, u, v)
 
 
-# ==============================================================
-#  MENU INTERACTIF
-# ==============================================================
+
 
 FICHIERS = {
     "1":  "pb1.txt",
@@ -643,9 +532,6 @@ def menu():
                 encore = input("  Afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
 
 
-# ==============================================================
-#  POINT D'ENTREE
-# ==============================================================
 
 if __name__ == "__main__":
     menu()
