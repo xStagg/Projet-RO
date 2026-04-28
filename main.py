@@ -353,36 +353,10 @@ def calculer_potentiels(n, m, couts, proposition):
     v = [x if x is not None else 0 for x in v]
     return u, v
 
-
-#  PROPOSITION INITIALE NORD-OUEST
-
-
-def nord_ouest(n, m, provisions, commandes):
-    prop   = [[0] * m for _ in range(n)]
-    prov_r = provisions[:]
-    cmd_r  = commandes[:]
-    ii, jj = 0, 0
-    while ii < n and jj < m:
-        q            = min(prov_r[ii], cmd_r[jj])
-        prop[ii][jj] = q
-        prov_r[ii]  -= q
-        cmd_r[jj]   -= q
-        if prov_r[ii] == 0 and cmd_r[jj] == 0:
-            if ii + 1 < n and jj + 1 < m:
-                prop[ii][jj + 1] = -1
-            ii += 1
-            jj += 1
-        elif prov_r[ii] == 0:
-            ii += 1
-        else:
-            jj += 1
-    return prop
-
-
 #  AFFICHAGE COMPLET D'UN PROBLEME
 
 
-def afficher_tout(n, m, couts, provisions, commandes):
+def afficher_tout(n, m, couts, provisions, commandes, prop, titre_prop):
     """Affiche les 4 tableaux pour un probleme charge."""
 
     print()
@@ -395,10 +369,8 @@ def afficher_tout(n, m, couts, provisions, commandes):
     # 1 - Matrice des couts
     afficher_matrice_couts(n, m, couts, provisions, commandes)
 
-    # 2 - Proposition initiale Nord-Ouest
-    prop = nord_ouest(n, m, provisions, commandes)
-    afficher_proposition(n, m, prop, provisions, commandes,
-                         "PROPOSITION INITIALE  (Nord-Ouest)")
+    # 2 - Proposition initiale
+    afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
     afficher_cout_total(n, m, couts, prop)
 
     # 3 - Potentiels
@@ -412,8 +384,6 @@ def afficher_tout(n, m, couts, provisions, commandes):
 
     # 5 - Table des couts marginaux
     afficher_table_marginaux(n, m, couts, prop, u, v)
-
-
 
 #  MENU
 
@@ -475,12 +445,33 @@ def menu():
 
         # Chargement
         n, m, couts, provisions, commandes = lire_probleme(fichier)
-        prop = nord_ouest(n, m, provisions, commandes)
-        u, v = calculer_potentiels(n, m, couts, prop)
 
         print()
         print("  Fichier charge : " + fichier +
               "  (" + str(n) + " x " + str(m) + ")")
+
+        # --- Choix de la methode ---
+        print()
+        print("  Quelle methode voulez-vous utiliser ?")
+        print("    1  ->  Nord-Ouest")
+        print("    2  ->  Balas-Hammer")
+        print("    0  ->  Changer de probleme")
+        print()
+        choix_methode = input("  Votre choix : ").strip()
+
+        if choix_methode == "0":
+            continue
+        elif choix_methode == "1":
+            prop = nord_ouest(n, m, provisions, commandes)
+            titre_prop = "PROPOSITION INITIALE  (Nord-Ouest)"
+        elif choix_methode == "2":
+            prop = balas_hammer(n, m, couts, provisions, commandes)
+            titre_prop = "PROPOSITION INITIALE  (Balas-Hammer)"
+        else:
+            print("  [!] Choix invalide.")
+            continue
+
+        u, v = calculer_potentiels(n, m, couts, prop)
 
         # --- Choix de l'affichage ---
         print()
@@ -498,8 +489,7 @@ def menu():
             afficher_matrice_couts(n, m, couts, provisions, commandes)
 
         elif choix_aff == "2":
-            afficher_proposition(n, m, prop, provisions, commandes,
-                                 "PROPOSITION INITIALE  (Nord-Ouest)")
+            afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
             afficher_cout_total(n, m, couts, prop)
 
         elif choix_aff == "3":
@@ -509,44 +499,39 @@ def menu():
             afficher_table_marginaux(n, m, couts, prop, u, v)
 
         elif choix_aff == "5":
-            afficher_tout(n, m, couts, provisions, commandes)
+            afficher_tout(n, m, couts, provisions, commandes, prop, titre_prop)
 
         else:
             print("  [!] Choix invalide.")
 
         # --- Continuer sur le meme probleme ? ---
         encore = input("  Afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
-        if encore == "o":
-            # reboucle sans rechoisir le fichier
-            while encore == "o":
-                print()
-                print("  Que voulez-vous afficher ?")
-                for k, label in AFFICHAGES.items():
-                    print("    " + k + "  ->  " + label)
-                print("    0  ->  Changer de probleme")
-                print()
-                choix_aff = input("  Votre choix : ").strip()
+        while encore == "o":
+            print()
+            print("  Que voulez-vous afficher ?")
+            for k, label in AFFICHAGES.items():
+                print("    " + k + "  ->  " + label)
+            print("    0  ->  Changer de probleme")
+            print()
+            choix_aff = input("  Votre choix : ").strip()
 
-                if choix_aff == "0":
-                    break
-                elif choix_aff == "1":
-                    afficher_matrice_couts(n, m, couts, provisions, commandes)
-                elif choix_aff == "2":
-                    afficher_proposition(n, m, prop, provisions, commandes,
-                                         "PROPOSITION INITIALE  (Nord-Ouest)")
-                    afficher_cout_total(n, m, couts, prop)
-                elif choix_aff == "3":
-                    afficher_table_potentiels(n, m, couts, prop, u, v)
-                elif choix_aff == "4":
-                    afficher_table_marginaux(n, m, couts, prop, u, v)
-                elif choix_aff == "5":
-                    afficher_tout(n, m, couts, provisions, commandes)
-                else:
-                    print("  [!] Choix invalide.")
+            if choix_aff == "0":
+                break
+            elif choix_aff == "1":
+                afficher_matrice_couts(n, m, couts, provisions, commandes)
+            elif choix_aff == "2":
+                afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
+                afficher_cout_total(n, m, couts, prop)
+            elif choix_aff == "3":
+                afficher_table_potentiels(n, m, couts, prop, u, v)
+            elif choix_aff == "4":
+                afficher_table_marginaux(n, m, couts, prop, u, v)
+            elif choix_aff == "5":
+                afficher_tout(n, m, couts, provisions, commandes, prop, titre_prop)
+            else:
+                print("  [!] Choix invalide.")
 
-                encore = input("  Afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
-
-
+            encore = input("  Afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
 
 if __name__ == "__main__":
     menu()
