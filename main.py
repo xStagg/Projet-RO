@@ -404,7 +404,7 @@ FICHIERS = {
 
 AFFICHAGES = {
     "1": "Matrice des couts",
-    "2": "Proposition de transport (Nord-Ouest)",
+    "2": "Proposition de transport + cout total",
     "3": "Table des couts potentiels",
     "4": "Table des couts marginaux",
     "5": "Tout afficher",
@@ -419,13 +419,14 @@ def menu():
 
     while True:
 
-        # --- Choix du fichier ---
+        # --- Choix du probleme ---
         print()
         print("  Problemes disponibles :")
         for k, f in sorted(FICHIERS.items(), key=lambda x: int(x[0])):
             print("    " + k.rjust(2) + "  ->  " + f)
         print("     0  ->  Quitter")
         print()
+
         choix_pb = input("  Choisissez un probleme (0-12) : ").strip()
 
         if choix_pb == "0":
@@ -443,95 +444,91 @@ def menu():
             print("  [!] Fichier '" + fichier + "' introuvable dans le dossier courant.")
             continue
 
-        # Chargement
+        # --- Lecture et stockage ---
         n, m, couts, provisions, commandes = lire_probleme(fichier)
 
         print()
         print("  Fichier charge : " + fichier +
               "  (" + str(n) + " x " + str(m) + ")")
 
-        # --- Choix de la methode ---
+        # --- Choix de l'algorithme pour la proposition initiale ---
         print()
-        print("  Quelle methode voulez-vous utiliser ?")
+        print("  Choisissez l'algorithme pour fixer la proposition initiale :")
         print("    1  ->  Nord-Ouest")
         print("    2  ->  Balas-Hammer")
         print("    0  ->  Changer de probleme")
         print()
-        choix_methode = input("  Votre choix : ").strip()
 
-        if choix_methode == "0":
+        choix_alg = input("  Votre choix : ").strip()
+
+        if choix_alg == "0":
             continue
-        elif choix_methode == "1":
+
+        if choix_alg == "1":
             prop = nord_ouest(n, m, provisions, commandes)
             titre_prop = "PROPOSITION INITIALE  (Nord-Ouest)"
-        elif choix_methode == "2":
+        elif choix_alg == "2":
             prop = balas_hammer(n, m, couts, provisions, commandes)
             titre_prop = "PROPOSITION INITIALE  (Balas-Hammer)"
         else:
             print("  [!] Choix invalide.")
             continue
 
+        # Calcul des potentiels sur la proposition obtenue
         u, v = calculer_potentiels(n, m, couts, prop)
 
-        # --- Choix de l'affichage ---
+        # --- Affichage des elements de base ---
         print()
-        print("  Que voulez-vous afficher ?")
-        for k, label in AFFICHAGES.items():
-            print("    " + k + "  ->  " + label)
+        print("  Elements disponibles pour ce probleme :")
+        print("    1  ->  Matrice des couts")
+        print("    2  ->  Proposition de transport + cout total")
+        print("    3  ->  Table des couts potentiels")
+        print("    4  ->  Table des couts marginaux")
+        print("    5  ->  Tout afficher")
         print("    0  ->  Changer de probleme")
         print()
-        choix_aff = input("  Votre choix : ").strip()
 
-        if choix_aff == "0":
-            continue
-
-        if choix_aff == "1":
-            afficher_matrice_couts(n, m, couts, provisions, commandes)
-
-        elif choix_aff == "2":
-            afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
-            afficher_cout_total(n, m, couts, prop)
-
-        elif choix_aff == "3":
-            afficher_table_potentiels(n, m, couts, prop, u, v)
-
-        elif choix_aff == "4":
-            afficher_table_marginaux(n, m, couts, prop, u, v)
-
-        elif choix_aff == "5":
-            afficher_tout(n, m, couts, provisions, commandes, prop, titre_prop)
-
-        else:
-            print("  [!] Choix invalide.")
-
-        # --- Continuer sur le meme probleme ? ---
-        encore = input("  Afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
-        while encore == "o":
-            print()
-            print("  Que voulez-vous afficher ?")
-            for k, label in AFFICHAGES.items():
-                print("    " + k + "  ->  " + label)
-            print("    0  ->  Changer de probleme")
-            print()
+        while True:
             choix_aff = input("  Votre choix : ").strip()
 
             if choix_aff == "0":
                 break
+
             elif choix_aff == "1":
                 afficher_matrice_couts(n, m, couts, provisions, commandes)
+
             elif choix_aff == "2":
                 afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
                 afficher_cout_total(n, m, couts, prop)
+
             elif choix_aff == "3":
                 afficher_table_potentiels(n, m, couts, prop, u, v)
+
             elif choix_aff == "4":
                 afficher_table_marginaux(n, m, couts, prop, u, v)
+
             elif choix_aff == "5":
-                afficher_tout(n, m, couts, provisions, commandes, prop, titre_prop)
+                afficher_matrice_couts(n, m, couts, provisions, commandes)
+                afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
+                afficher_cout_total(n, m, couts, prop)
+                afficher_table_potentiels(n, m, couts, prop, u, v)
+                afficher_table_marginaux(n, m, couts, prop, u, v)
+
             else:
                 print("  [!] Choix invalide.")
 
-            encore = input("  Afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
+            print()
+            rep = input("  Voulez-vous afficher autre chose pour ce probleme ? (o/n) : ").strip().lower()
+            if rep != "o":
+                break
 
+        # --- Changer de probleme ou quitter ---
+        print()
+        rep_global = input("  Voulez-vous tester un autre probleme ? (o/n) : ").strip().lower()
+        if rep_global != "o":
+            print()
+            print("  Au revoir !")
+            print()
+            break
 if __name__ == "__main__":
     menu()
