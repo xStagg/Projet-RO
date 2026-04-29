@@ -3,6 +3,7 @@ import sys
 import os
 from nordouest   import nord_ouest
 from balashammer import balas_hammer
+from collections import deque
 
 #  1. LECTURE ET STOCKAGE EN MEMOIRE
 
@@ -283,7 +284,7 @@ def afficher_table_marginaux(n, m, couts, proposition, u, v):
     if meilleur:
         i, j = meilleur
         print("  --> Arete ameliorante : (P" + str(i+1) + ", C" + str(j+1)
-              + ")   delta = " + str(val_min))
+              + ")   cout marginal   = " + str(val_min))
     else:
         print("  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.")
     print()
@@ -352,6 +353,195 @@ def calculer_potentiels(n, m, couts, proposition):
     u = [x if x is not None else 0 for x in u]
     v = [x if x is not None else 0 for x in v]
     return u, v
+
+def _est_case_de_base(val):
+    return val > 0 or val == -1
+
+
+def _graphe_transport(n, m, proposition):
+    """
+    Graphe biparti du transport :
+    - sommets 0..n-1 : fournisseurs Pi
+    - sommets n..n+m-1 : clients Cj
+    """
+    adj = [[] for _ in range(n + m)]
+
+    for i in range(n):
+        for j in range(m):
+            if _est_case_de_base(proposition[i][j]):
+                a = i
+                b = n + j
+                adj[a].append(b)
+                adj[b].append(a)
+
+    return adj
+
+
+def trouver_cycle(n, m, proposition, i_entree, j_entree):
+    """
+    Trouve le cycle créé par l'ajout de l'arête (Pi_entree, Cj_entree).
+    Retour :
+        cycle = [((i,j), signe), ...]
+    avec signe = +1 ou -1
+    """
+    adj = _graphe_transport(n, m, proposition)
+
+    depart = i_entree
+    arrivee = n + j_entree
+
+    parent = [-1] * (n + m)
+    parent[depart] = depart
+
+    file = deque([depart])
+
+    while file and parent[arrivee] == -1:
+        u = file.popleft()
+        for v in adj[u]:
+            if parent[v] == -1:
+                parent[v] = u
+                file.append(v)
+
+    if parent[arrivee] == -1:
+        return None
+
+    # Reconstruit le chemin depart -> arrivee
+    noeuds = []
+    cur = arrivee
+    while cur != depart:
+        noeuds.append(cur)
+        cur = parent[cur]
+    noeuds.append(depart)
+    noeuds.reverse()
+
+    # Transforme le chemin en liste de cases
+    chemin_cases = []
+    for k in range(len(noeuds) - 1):
+        a = noeuds[k]
+        b = noeuds[k + 1]
+
+        if a < n and b >= n:
+            i = a
+            j = b - n
+        elif a >= n and b < n:
+            i = b
+            j = a - n
+        else:
+            return None
+
+        chemin_cases.append((i, j))
+
+    # Cycle : arête entrante en +, puis alternance sur le chemin
+    cycle = [((i_entree, j_entree), +1)]
+    signe = -1
+    for i, j in reversed(chemin_cases):
+        cycle.append(((i, j), signe))
+        signe *= -1
+
+    return cycle
+
+
+def calculer_delta_cycle(proposition, cycle):
+    """
+    Delta = min des quantités sur les cases marquées '-'.
+    """
+    delta = None
+
+    for (i, j), signe in cycle:
+        if signe == -1:
+            qte = proposition[i][j]
+            if qte == -1:
+                qte = 0
+            if delta is None or qte < delta:
+                delta = qte
+
+    return 0 if delta is None else delta
+
+
+def mettre_a_jour_proposition(proposition, cycle, delta):
+    """
+    Applique le pivot sur le cycle :
+    - ajoute delta sur les '+'
+    - retire delta sur les '-'
+    """
+    nouvelle = [ligne[:] for ligne in proposition]
+
+    if delta <= 0:
+        return nouvelle
+
+    # Ajouter delta sur les cases '+'
+    for (i, j), signe in cycle:
+        if signe == +1:
+            if nouvelle[i][j] == -1 or nouvelle[i][j] == 0:
+                nouvelle[i][j] = delta
+            else:
+                nouvelle[i][j] += delta
+
+    # Retirer delta sur les cases '-'
+    sortie_deja_faite = False
+    for (i, j), signe in cycle:
+        if signe == -1:
+            qte = nouvelle[i][j]
+            if qte == -1:
+                qte = 0
+
+            qte -= delta
+
+            if qte > 0:
+                nouvelle[i][j] = qte
+            elif qte == 0:
+                if not sortie_deja_faite:
+                    nouvelle[i][j] = 0
+                    sortie_deja_faite = True
+                else:
+                    nouvelle[i][j] = -1
+            else:
+                nouvelle[i][j] = 0
+
+    return nouvelle
+
+
+def ameliorer_une_fois(n, m, couts, proposition):
+    """
+    Fait une seule itération :
+    - calcule les potentiels
+    - affiche les marginaux
+    - trouve la meilleure arête
+    - calcule le cycle
+    - calcule delta
+    - met à jour la proposition
+    """
+    u, v = calculer_potentiels(n, m, couts, proposition)
+
+    meilleur = afficher_table_marginaux(n, m, couts, proposition, u, v)
+
+    if meilleur is None:
+        return proposition, True
+
+    i, j = meilleur
+    cycle = trouver_cycle(n, m, proposition, i, j)
+
+    if cycle is None:
+        print("  [!] Cycle introuvable.")
+        return proposition, False
+
+    print("  Cycle détecté :")
+    for (ii, jj), signe in cycle:
+        s = "+" if signe == 1 else "-"
+        print("    (" + "P" + str(ii + 1) + ", C" + str(jj + 1) + ")  " + s)
+
+    delta = calculer_delta_cycle(proposition, cycle)
+    print("  Delta max du cycle = " + str(delta))
+
+    nouvelle_proposition = mettre_a_jour_proposition(proposition, cycle, delta)
+
+    if delta > 0:
+        print("  Proposition mise à jour.")
+    else:
+        print("  Delta nul : aucune modification.")
+
+    return nouvelle_proposition, False
+
+
 
 #  AFFICHAGE COMPLET D'UN PROBLEME
 
@@ -465,7 +655,7 @@ def menu():
             continue
 
         if choix_alg == "1":
-            prop = nord_ouest(n, m, provisions, commandes)
+            prop = nord_ouest(n, m, couts, provisions, commandes)
             titre_prop = "PROPOSITION INITIALE  (Nord-Ouest)"
         elif choix_alg == "2":
             prop = balas_hammer(n, m, couts, provisions, commandes)
@@ -478,17 +668,18 @@ def menu():
         u, v = calculer_potentiels(n, m, couts, prop)
 
         # --- Affichage des elements de base ---
-        print()
-        print("  Elements disponibles pour ce probleme :")
-        print("    1  ->  Matrice des couts")
-        print("    2  ->  Proposition de transport + cout total")
-        print("    3  ->  Table des couts potentiels")
-        print("    4  ->  Table des couts marginaux")
-        print("    5  ->  Tout afficher")
-        print("    0  ->  Changer de probleme")
-        print()
-
         while True:
+            print()
+            print("  Elements disponibles pour ce probleme :")
+            print("    1  ->  Matrice des couts")
+            print("    2  ->  Proposition de transport + cout total")
+            print("    3  ->  Table des couts potentiels")
+            print("    4  ->  Table des couts marginaux")
+            print("    5  ->  Tout afficher")
+            print("    6  ->  Ameliorer la proposition (cycle + delta)")
+            print("    0  ->  Changer de probleme")
+            print()
+
             choix_aff = input("  Votre choix : ").strip()
 
             if choix_aff == "0":
@@ -514,6 +705,41 @@ def menu():
                 afficher_table_potentiels(n, m, couts, prop, u, v)
                 afficher_table_marginaux(n, m, couts, prop, u, v)
 
+            elif choix_aff == "6":
+                print()
+                print("  --- Amelioration de la proposition ---")
+
+                prop_courante = [ligne[:] for ligne in prop]
+                iteration = 1
+
+                while True:
+                    print()
+                    print("  Iteration " + str(iteration))
+                    afficher_proposition(n, m, prop_courante, provisions, commandes,
+                                         "PROPOSITION COURANTE")
+                    afficher_cout_total(n, m, couts, prop_courante)
+
+                    nouvelle_prop, optimal = ameliorer_une_fois(n, m, couts, prop_courante)
+
+                    if optimal:
+                        prop_courante = nouvelle_prop
+                        print("  Solution optimale atteinte.")
+                        afficher_proposition(n, m, prop_courante, provisions, commandes,
+                                             "PROPOSITION OPTIMALE")
+                        afficher_cout_total(n, m, couts, prop_courante)
+                        break
+
+                    if nouvelle_prop == prop_courante:
+                        print("  [!] Aucune modification apportee.")
+                        break
+
+                    prop_courante = nouvelle_prop
+                    u, v = calculer_potentiels(n, m, couts, prop_courante)
+                    iteration += 1
+
+                prop = prop_courante
+                u, v = calculer_potentiels(n, m, couts, prop)
+
             else:
                 print("  [!] Choix invalide.")
 
@@ -530,5 +756,6 @@ def menu():
             print("  Au revoir !")
             print()
             break
+
 if __name__ == "__main__":
     menu()

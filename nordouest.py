@@ -1,4 +1,4 @@
-def nord_ouest(n, m, provisions, commandes):
+def nord_ouest(n, m, couts, provisions, commandes):
 
     print()
     print("-" * 10)
@@ -27,9 +27,22 @@ def nord_ouest(n, m, provisions, commandes):
         if prov_r[i] == 0 and cmd_r[j] == 0:
             # Degenerescence : les deux s'epuisent en meme temps
             if i + 1 < n and j + 1 < m:
-                prop[i][j + 1] = -1
-                print("  [!] Degenerescence : case (P" + str(i+1) + ", C" + str(j+2)
-                      + ") ajoutee comme base a zero")
+
+                # Deux cases candidates possibles :
+                # - la case a droite : (i, j+1)
+                # - la case en bas   : (i+1, j)
+
+                cout_droite = couts[i][j + 1]
+                cout_bas = couts[i + 1][j]
+
+                if cout_droite <= cout_bas:
+                    prop[i][j + 1] = -1
+                    print("  [!] Degenerescence : case (P" + str(i + 1) + ", C" + str(j + 2)
+                          + ") ajoutee comme base a zero car son cout est le plus faible")
+                else:
+                    prop[i + 1][j] = -1
+                    print("  [!] Degenerescence : case (P" + str(i + 2) + ", C" + str(j + 1)
+                          + ") ajoutee comme base a zero car son cout est le plus faible")
             i += 1
             j += 1
 
