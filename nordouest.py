@@ -93,7 +93,7 @@ if __name__ == "__main__":
             n, m, couts, provisions, commandes = lire_probleme(fichier)
             afficher_matrice_couts(n, m, couts, provisions, commandes)
 
-            prop = nord_ouest(n, m, provisions, commandes)
+            prop = nord_ouest(n, m, couts, provisions, commandes)
 
             afficher_proposition(n, m, prop, provisions, commandes,
                                  "proposition initial  (Nord-Ouest)")
