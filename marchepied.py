@@ -496,8 +496,11 @@ def ajouter_arete_ameliorante(n, m, couts, proposition, meilleur):
     print("  Cycle forme :")
     for (i, j), signe in cycle:
         s = "+" if signe == 1 else "-"
+        qte = proposition[i][j]
+        if qte == -1:
+            qte = 0
         print("    (P" + str(i + 1) + ", C" + str(j + 1) + ")  " + s
-              + "  quantite=" + str(max(0, proposition[i][j])))
+              + "  quantite=" + str(qte))
 
     # delta
     delta = None
@@ -516,29 +519,52 @@ def ajouter_arete_ameliorante(n, m, couts, proposition, meilleur):
 
     # pivot
     nouvelle = [ligne[:] for ligne in proposition]
-    sorties  = []
+    cases_sortantes_possibles = []
 
     for (i, j), signe in cycle:
-        if signe == +1:
-            v = nouvelle[i][j]
-            nouvelle[i][j] = delta if (v <= 0) else v + delta
-        else:
-            v = nouvelle[i][j]
-            if v == -1:
-                v = 0
-            v -= delta
-            if v > 0:
-                nouvelle[i][j] = v
-            else:
-                sorties.append((i, j))
-                nouvelle[i][j] = 0
 
-    if sorties:
-        print("  Arete(s) sortante(s) :")
-        for i, j in sorties:
-            print("    (P" + str(i + 1) + ", C" + str(j + 1) + ")  -> sortie de la base")
+        valeur = nouvelle[i][j]
+
+        if valeur == -1:
+            valeur = 0
+
+        if signe == +1:
+            valeur = valeur + delta
+
+            if valeur > 0:
+                nouvelle[i][j] = valeur
+            else:
+                nouvelle[i][j] = -1
+
+        else:
+            valeur = valeur - delta
+
+            if valeur > 0:
+                nouvelle[i][j] = valeur
+            else:
+                nouvelle[i][j] = -1
+                cases_sortantes_possibles.append((i, j))
+
+    if cases_sortantes_possibles:
+
+        sortie = None
+
+        for i, j in cases_sortantes_possibles:
+            if proposition[i][j] == -1:
+                sortie = (i, j)
+                break
+
+        if sortie is None:
+            sortie = cases_sortantes_possibles[0]
+
+        nouvelle[sortie[0]][sortie[1]] = 0
+
+        print("  Arete sortante :")
+        print("    (P" + str(sortie[0] + 1) + ", C" + str(sortie[1] + 1)
+              + ")  -> sortie de la base")
+
     else:
-        print("  Delta nul : aucune modification apportee.")
+        print("  Aucune arete sortante.")
 
     print()
     return nouvelle
