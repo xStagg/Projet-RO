@@ -1,10 +1,9 @@
 import sys
 import os
-from collections import deque
 
-from nordouest   import nord_ouest
+from nordouest import nord_ouest
 from balashammer import balas_hammer
-from marchepied  import marche_pied_complet
+from marchepied import marche_pied_complet
 
 # 1. LECTURE ET STOCKAGE EN MEMOIRE
 
@@ -84,36 +83,34 @@ def _tableau(titre, lignes_donnees, entete_cols, entete_lignes,
     print()
 
 
-
 #  2a. MATRICE DES COUTS
 
 
 def afficher_matrice_couts(n, m, couts, provisions, commandes):
 
-    val_max  = _max_abs(couts + [provisions] + [commandes])
-    w        = _col_width(val_max, extra=2, minimum=6)
-    w_prov   = max(w, len("Provision") + 2)
-    w_lbl    = max(len("Commande") + 2, 10)
+    val_max = _max_abs(couts + [provisions] + [commandes])
+    w = _col_width(val_max, extra=2, minimum=6)
+    w_prov = max(w, len("Provision") + 2)
+    w_lbl = max(len("Commande") + 2, 10)
 
-    largeurs      = [w] * m + [w_prov]
-    entete_cols   = ["C" + str(j + 1) for j in range(m)] + ["Provision"]
+    largeurs = [w] * m + [w_prov]
+    entete_cols = ["C" + str(j + 1) for j in range(m)] + ["Provision"]
     entete_lignes = ["P" + str(i + 1) for i in range(n)]
-    donnees       = [
+    donnees = [
         [str(couts[i][j]) for j in range(m)] + [str(provisions[i])]
         for i in range(n)
     ]
     pied = [str(commandes[j]) for j in range(m)] + [""]
 
     _tableau(
-        titre          = "MATRICE DES COUTS",
-        lignes_donnees = donnees,
-        entete_cols    = entete_cols,
-        entete_lignes  = entete_lignes,
-        largeurs_cols  = largeurs,
-        largeur_lbl    = w_lbl,
-        pied_ligne     = pied
+        titre="MATRICE DES COUTS",
+        lignes_donnees=donnees,
+        entete_cols=entete_cols,
+        entete_lignes=entete_lignes,
+        largeurs_cols=largeurs,
+        largeur_lbl=w_lbl,
+        pied_ligne=pied
     )
-
 
 
 #  2b. PROPOSITION DE TRANSPORT
@@ -138,143 +135,29 @@ def afficher_proposition(n, m, proposition, provisions, commandes,
     vals_pos = [proposition[i][j]
                 for i in range(n) for j in range(m)
                 if proposition[i][j] > 0]
-    val_max  = max(vals_pos) if vals_pos else 0
-    val_max  = max(val_max, max(provisions), max(commandes))
+    val_max = max(vals_pos) if vals_pos else 0
+    val_max = max(val_max, max(provisions), max(commandes))
 
-    w      = _col_width(val_max, extra=2, minimum=6)
-    w      = max(w, len("(0)") + 2)
+    w = _col_width(val_max, extra=2, minimum=6)
+    w = max(w, len("(0)") + 2)
     w_prov = max(w, len("Provision") + 2)
-    w_lbl  = max(len("Commande") + 2, 10)
-
-    largeurs      = [w] * m + [w_prov]
-    entete_cols   = ["C" + str(j + 1) for j in range(m)] + ["Provision"]
-    entete_lignes = ["P" + str(i + 1) for i in range(n)]
-    donnees       = [affichage[i] + [str(provisions[i])] for i in range(n)]
-    pied          = [str(commandes[j]) for j in range(m)] + [""]
-
-    _tableau(
-        titre          = titre,
-        lignes_donnees = donnees,
-        entete_cols    = entete_cols,
-        entete_lignes  = entete_lignes,
-        largeurs_cols  = largeurs,
-        largeur_lbl    = w_lbl,
-        pied_ligne     = pied
-    )
-
-
-#  2c. TABLE DES COUTS POTENTIELS
-
-def afficher_table_potentiels(n, m, couts, proposition, u, v):
-
-    table     = [[u[i] + v[j] for j in range(m)] for i in range(n)]
-    val_max   = _max_abs(table)
-    lbl_u_max = max(len("u" + str(i + 1) + "=" + str(u[i])) for i in range(n))
-    lbl_v_max = max(len("v" + str(j + 1) + "=" + str(v[j])) for j in range(m))
-
-    w     = max(_col_width(val_max, extra=2, minimum=6),
-                lbl_v_max + 2,
-                len("[" + str(val_max) + "]") + 2,
-                8)
-    w_lbl = max(lbl_u_max + 2, 10)
-
-    largeurs      = [w] * m
-    entete_cols   = ["v" + str(j + 1) + "=" + str(v[j]) for j in range(m)]
-    entete_lignes = ["u" + str(i + 1) + "=" + str(u[i]) for i in range(n)]
-
-    donnees = []
-    for i in range(n):
-        row = []
-        for j in range(m):
-            pot     = u[i] + v[j]
-            en_base = (proposition[i][j] > 0 or proposition[i][j] == -1)
-            row.append("[" + str(pot) + "]" if en_base else str(pot))
-        donnees.append(row)
-
-    _tableau(
-        titre          = "TABLE DES COUTS POTENTIELS  ( u_i + v_j )",
-        lignes_donnees = donnees,
-        entete_cols    = entete_cols,
-        entete_lignes  = entete_lignes,
-        largeurs_cols  = largeurs,
-        largeur_lbl    = w_lbl,
-        pied_ligne     = None
-    )
-    print("  Legende : [val] = case de base")
-    print()
-
-
-
-#  2d. TABLE DES COUTS MARGINAUX
-
-
-def afficher_table_marginaux(n, m, couts, proposition, u, v):
-
-    marginaux = []
-    meilleur  = None
-    val_min   = 0
-
-    for i in range(n):
-        row = []
-        for j in range(m):
-            en_base = (proposition[i][j] > 0 or proposition[i][j] == -1)
-            if en_base:
-                row.append(None)
-            else:
-                delta = couts[i][j] - u[i] - v[j]
-                row.append(delta)
-                if delta < val_min:
-                    val_min  = delta
-                    meilleur = (i, j)
-        marginaux.append(row)
-
-    vals_num = [v2 for row in marginaux for v2 in row if v2 is not None]
-    val_max  = max(abs(v2) for v2 in vals_num) if vals_num else 0
-    marqueur = ">>" + str(val_min) + "<<"
-
-    w     = max(_col_width(val_max, extra=2, minimum=6),
-                len("[BASE]") + 2,
-                len(marqueur) + 2,
-                8)
     w_lbl = max(len("Commande") + 2, 10)
 
-    largeurs      = [w] * m
-    entete_cols   = ["C" + str(j + 1) for j in range(m)]
+    largeurs = [w] * m + [w_prov]
+    entete_cols = ["C" + str(j + 1) for j in range(m)] + ["Provision"]
     entete_lignes = ["P" + str(i + 1) for i in range(n)]
-
-    donnees = []
-    for i in range(n):
-        row = []
-        for j in range(m):
-            if marginaux[i][j] is None:
-                row.append("[BASE]")
-            elif meilleur and (i, j) == meilleur:
-                row.append(">>" + str(marginaux[i][j]) + "<<")
-            else:
-                row.append(str(marginaux[i][j]))
-        donnees.append(row)
+    donnees = [affichage[i] + [str(provisions[i])] for i in range(n)]
+    pied = [str(commandes[j]) for j in range(m)] + [""]
 
     _tableau(
-        titre          = "TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )",
-        lignes_donnees = donnees,
-        entete_cols    = entete_cols,
-        entete_lignes  = entete_lignes,
-        largeurs_cols  = largeurs,
-        largeur_lbl    = w_lbl,
-        pied_ligne     = None
+        titre=titre,
+        lignes_donnees=donnees,
+        entete_cols=entete_cols,
+        entete_lignes=entete_lignes,
+        largeurs_cols=largeurs,
+        largeur_lbl=w_lbl,
+        pied_ligne=pied
     )
-
-    print("  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante")
-    print()
-    if meilleur:
-        i, j = meilleur
-        print("  --> Arete ameliorante : (P" + str(i + 1) + ", C" + str(j + 1)
-              + ")   cout marginal   = " + str(val_min))
-    else:
-        print("  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.")
-    print()
-
-    return meilleur
 
 
 #  5. CALCUL DU COUT TOTAL
@@ -299,7 +182,7 @@ def afficher_cout_total(n, m, couts, proposition):
         for j in range(m):
             if proposition[i][j] > 0:
                 contrib = couts[i][j] * proposition[i][j]
-                Z      += contrib
+                Z += contrib
                 print("  (P" + str(i + 1) + ", C" + str(j + 1) + ")"
                       + "   :   cout=" + str(couts[i][j]).rjust(4)
                       + "  x  qte=" + str(proposition[i][j]).rjust(5)
@@ -310,31 +193,6 @@ def afficher_cout_total(n, m, couts, proposition):
     print()
     return Z
 
-
-
-#  CALCUL DES POTENTIELS (pour le menu simple)
-
-
-def calculer_potentiels(n, m, couts, proposition):
-    u = [None] * n
-    v = [None] * m
-    u[0] = 0
-    modifie = True
-    while modifie:
-        modifie = False
-        for i in range(n):
-            for j in range(m):
-                en_base = (proposition[i][j] > 0 or proposition[i][j] == -1)
-                if en_base:
-                    if u[i] is not None and v[j] is None:
-                        v[j] = couts[i][j] - u[i]
-                        modifie = True
-                    elif v[j] is not None and u[i] is None:
-                        u[i] = couts[i][j] - v[j]
-                        modifie = True
-    u = [x if x is not None else 0 for x in u]
-    v = [x if x is not None else 0 for x in v]
-    return u, v
 
 #  MENU
 
@@ -356,9 +214,9 @@ FICHIERS = {
 
 def menu():
     print()
-    print("=" * 50)
-    print("   PROBLEME DE TRANSPORT  -  Efrei Paris S6")
-    print("=" * 50)
+    print("-" * 30)
+    print("   PROBLEME DE TRANSPORT ")
+    print("-" * 30)
 
     while True:
 
@@ -414,17 +272,14 @@ def menu():
             continue
 
         if choix_alg == "1":
-            prop       = nord_ouest(n, m, couts, provisions, commandes)
+            prop = nord_ouest(n, m, couts, provisions, commandes)
             titre_prop = "PROPOSITION INITIALE  (Nord-Ouest)"
         elif choix_alg == "2":
-            prop       = balas_hammer(n, m, couts, provisions, commandes)
+            prop = balas_hammer(n, m, couts, provisions, commandes)
             titre_prop = "PROPOSITION INITIALE  (Balas-Hammer)"
         else:
             print("  [!] Choix invalide.")
             continue
-
-        # Potentiels sur la proposition initiale
-        u, v = calculer_potentiels(n, m, couts, prop)
 
         # Fermetures pour passer aux fonctions du marche-pied
         def _aff_prop(p, titre):
@@ -439,10 +294,7 @@ def menu():
             print("  Elements disponibles pour ce probleme :")
             print("    1  ->  Matrice des couts")
             print("    2  ->  Proposition de transport + cout total")
-            print("    3  ->  Table des couts potentiels")
-            print("    4  ->  Table des couts marginaux")
-            print("    5  ->  Tout afficher (tableaux de base)")
-            print("    6  ->  Lancer le marche-pied complet (jusqu'a l'optimal)")
+            print("    3  ->  Lancer le marche-pied complet (jusqu'a l'optimal)")
             print("    0  ->  Changer de probleme")
             print()
 
@@ -459,19 +311,6 @@ def menu():
                 afficher_cout_total(n, m, couts, prop)
 
             elif choix_aff == "3":
-                afficher_table_potentiels(n, m, couts, prop, u, v)
-
-            elif choix_aff == "4":
-                afficher_table_marginaux(n, m, couts, prop, u, v)
-
-            elif choix_aff == "5":
-                afficher_matrice_couts(n, m, couts, provisions, commandes)
-                afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
-                afficher_cout_total(n, m, couts, prop)
-                afficher_table_potentiels(n, m, couts, prop, u, v)
-                afficher_table_marginaux(n, m, couts, prop, u, v)
-
-            elif choix_aff == "6":
                 # --- MARCHE-PIED COMPLET ---
                 afficher_matrice_couts(n, m, couts, provisions, commandes)
                 afficher_proposition(n, m, prop, provisions, commandes, titre_prop)
@@ -485,7 +324,6 @@ def menu():
                 )
                 # Met à jour la proposition courante avec l'optimale
                 prop = prop_opt
-                u, v = calculer_potentiels(n, m, couts, prop)
 
             else:
                 print("  [!] Choix invalide.")

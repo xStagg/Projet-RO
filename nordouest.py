@@ -35,14 +35,6 @@ def nord_ouest(n, m, couts, provisions, commandes):
                 cout_droite = couts[i][j + 1]
                 cout_bas = couts[i + 1][j]
 
-                if cout_droite <= cout_bas:
-                    prop[i][j + 1] = -1
-                    print("  [!] Degenerescence : case (P" + str(i + 1) + ", C" + str(j + 2)
-                          + ") ajoutee comme base a zero car son cout est le plus faible")
-                else:
-                    prop[i + 1][j] = -1
-                    print("  [!] Degenerescence : case (P" + str(i + 2) + ", C" + str(j + 1)
-                          + ") ajoutee comme base a zero car son cout est le plus faible")
             i += 1
             j += 1
 

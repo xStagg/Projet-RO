@@ -147,29 +147,7 @@ def balas_hammer(n, m, couts, provisions, commandes):
             nb_lignes_rest = sum(lignes_actives)
             nb_cols_rest   = sum(cols_actives)
 
-            if nb_lignes_rest > 0 and nb_cols_rest > 0:
-                print("  [!] Degenerescence : P" + str(best_i+1)
-                      + " et C" + str(best_j+1) + " epuisees simultanement")
 
-                # Case degeneree : cout minimal restant sur la ligne ou colonne
-                best_degen_cout = None
-                best_di, best_dj = -1, -1
-
-                for j in range(m):
-                    if cols_actives[j] and prop[best_i][j] == 0:
-                        if best_degen_cout is None or couts[best_i][j] < best_degen_cout:
-                            best_degen_cout = couts[best_i][j]
-                            best_di, best_dj = best_i, j
-                for i in range(n):
-                    if lignes_actives[i] and prop[i][best_j] == 0:
-                        if best_degen_cout is None or couts[i][best_j] < best_degen_cout:
-                            best_degen_cout = couts[i][best_j]
-                            best_di, best_dj = i, best_j
-
-                if best_di != -1:
-                    prop[best_di][best_dj] = -1
-                    print("      Case degeneree ajoutee : (P" + str(best_di+1)
-                          + ", C" + str(best_dj+1) + ")  base a zero")
 
         elif prov_r[best_i] == 0:
             lignes_actives[best_i] = False
