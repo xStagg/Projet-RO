@@ -1,0 +1,423 @@
+------------------------------
+   PROBLEME DE TRANSPORT 
+------------------------------
+
+  Problemes disponibles :
+     1  ->  pb1.txt
+     2  ->  pb2.txt
+     3  ->  pb3.txt
+     4  ->  pb4.txt
+     5  ->  pb5.txt
+     6  ->  pb6.txt
+     7  ->  pb7.txt
+     8  ->  pb8.txt
+     9  ->  pb9.txt
+    10  ->  pb10.txt
+    11  ->  pb11.txt
+    12  ->  pb12.txt
+     0  ->  Quitter
+
+  Choisissez un probleme (0-12) : 10
+
+  Fichier charge : pb10.txt  (3 x 7)
+
+============================================================
+  Dimensions  : 3 fournisseurs  x  7 clients
+  Provisions  : [500, 500, 2500]   somme = 3500
+  Commandes   : [500, 500, 500, 500, 500, 500, 500]   somme = 3500
+============================================================
+
+  Choisissez l'algorithme pour fixer la proposition initiale :
+    1  ->  Nord-Ouest
+    2  ->  Balas-Hammer
+    0  ->  Changer de probleme
+
+  Votre choix : 2
+
+----------
+   ALGORITHME DE BALAS-HAMMER
+----------
+
+  --- Etape 1 ----------------------------------------
+
+  Penalites des lignes actives :
+    P1    provision=500     penalite = 1
+    P2    provision=500     penalite = 18
+    P3    provision=2500    penalite = 0
+  Penalites des colonnes actives :
+    C1    commande= 500     penalite = 49
+    C2    commande= 500     penalite = 20
+    C3    commande= 500     penalite = 9
+    C4    commande= 500     penalite = 13
+    C5    commande= 500     penalite = 5
+    C6    commande= 500     penalite = 8
+    C7    commande= 500     penalite = 16
+
+  Penalite maximale = 49
+  Colonne(s) a penalite maximale : C1
+  --> Arete choisie : (P2, C1)   cout unitaire = 1
+      Quantite affectee = 500
+      Provision restante P2 = 0   Commande restante C1 = 0
+
+  --- Etape 2 ----------------------------------------
+
+  Penalites des lignes actives :
+    P1    provision=500     penalite = 1
+    P3    provision=2500    penalite = 0
+  Penalites des colonnes actives :
+    C2    commande= 500     penalite = 20
+    C3    commande= 500     penalite = 15
+    C4    commande= 500     penalite = 13
+    C5    commande= 500     penalite = 8
+    C6    commande= 500     penalite = 8
+    C7    commande= 500     penalite = 17
+
+  Penalite maximale = 20
+  Colonne(s) a penalite maximale : C2
+  --> Arete choisie : (P1, C2)   cout unitaire = 20
+      Quantite affectee = 500
+      Provision restante P1 = 0   Commande restante C2 = 0
+
+  --- Etape 3 ----------------------------------------
+
+  Penalites des lignes actives :
+    P3    provision=2500    penalite = 0
+  Penalites des colonnes actives :
+    C3    commande= 500     penalite = 30
+    C4    commande= 500     penalite = 3
+    C5    commande= 500     penalite = 25
+    C6    commande= 500     penalite = 26
+    C7    commande= 500     penalite = 3
+
+  Penalite maximale = 30
+  Colonne(s) a penalite maximale : C3
+  --> Arete choisie : (P3, C3)   cout unitaire = 30
+      Quantite affectee = 500
+      Provision restante P3 = 2000   Commande restante C3 = 0
+      C3 epuisee  ->  colonne desactivee
+
+  --- Etape 4 ----------------------------------------
+
+  Penalites des lignes actives :
+    P3    provision=2000    penalite = 0
+  Penalites des colonnes actives :
+    C4    commande= 500     penalite = 3
+    C5    commande= 500     penalite = 25
+    C6    commande= 500     penalite = 26
+    C7    commande= 500     penalite = 3
+
+  Penalite maximale = 26
+  Colonne(s) a penalite maximale : C6
+  --> Arete choisie : (P3, C6)   cout unitaire = 26
+      Quantite affectee = 500
+      Provision restante P3 = 1500   Commande restante C6 = 0
+      C6 epuisee  ->  colonne desactivee
+
+  --- Etape 5 ----------------------------------------
+
+  Penalites des lignes actives :
+    P3    provision=1500    penalite = 0
+  Penalites des colonnes actives :
+    C4    commande= 500     penalite = 3
+    C5    commande= 500     penalite = 25
+    C7    commande= 500     penalite = 3
+
+  Penalite maximale = 25
+  Colonne(s) a penalite maximale : C5
+  --> Arete choisie : (P3, C5)   cout unitaire = 25
+      Quantite affectee = 500
+      Provision restante P3 = 1000   Commande restante C5 = 0
+      C5 epuisee  ->  colonne desactivee
+
+  --- Etape 6 ----------------------------------------
+
+  Penalites des lignes actives :
+    P3    provision=1000    penalite = 0
+  Penalites des colonnes actives :
+    C4    commande= 500     penalite = 3
+    C7    commande= 500     penalite = 3
+
+  Penalite maximale = 3
+  Colonne(s) a penalite maximale : C4  C7
+  --> Arete choisie : (P3, C4)   cout unitaire = 3
+      Quantite affectee = 500
+      Provision restante P3 = 500   Commande restante C4 = 0
+      C4 epuisee  ->  colonne desactivee
+
+  --- Etape 7 ----------------------------------------
+
+  Penalites des lignes actives :
+    P3    provision=500     penalite = 3
+  Penalites des colonnes actives :
+    C7    commande= 500     penalite = 3
+
+  Penalite maximale = 3
+  Ligne(s) a penalite maximale   : P3
+  Colonne(s) a penalite maximale : C7
+  --> Arete choisie : (P3, C7)   cout unitaire = 3
+      Quantite affectee = 500
+      Provision restante P3 = 0   Commande restante C7 = 0
+
+  Proposition Balas-Hammer construite.
+
+
+  Elements disponibles pour ce probleme :
+    1  ->  Matrice des couts
+    2  ->  Proposition de transport + cout total
+    3  ->  Lancer le marche-pied complet (jusqu'a l'optimal)
+    0  ->  Changer de probleme
+
+  Votre choix : 3
+
+                       MATRICE DES COUTS                       
+---------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7   Provision 
+---------------------------------------------------------------
+    P1     300    20    15    16    17    18    20      500    
+    P2      1     50    24    30    22    27    19      500    
+    P3      50    40    30    3     25    26    3       2500   
+---------------------------------------------------------------
+           500   500   500   500   500   500   500             
+
+
+              PROPOSITION INITIALE  (Balas-Hammer)             
+---------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7   Provision 
+---------------------------------------------------------------
+    P1      .    500    .     .     .     .     .       500    
+    P2     500    .     .     .     .     .     .       500    
+    P3      .     .    500   500   500   500   500      2500   
+---------------------------------------------------------------
+           500   500   500   500   500   500   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  500   =    10000
+  (P2, C1)   :   cout=   1  x  qte=  500   =      500
+  (P3, C3)   :   cout=  30  x  qte=  500   =    15000
+  (P3, C4)   :   cout=   3  x  qte=  500   =     1500
+  (P3, C5)   :   cout=  25  x  qte=  500   =    12500
+  (P3, C6)   :   cout=  26  x  qte=  500   =    13000
+  (P3, C7)   :   cout=   3  x  qte=  500   =     1500
+  --------------------------------------------
+  Cout total   Z  =  54000
+
+
+============================================================
+  METHODE DU MARCHE-PIED AVEC POTENTIEL
+============================================================
+
+  ========================================================
+  ITERATION 1
+  ========================================================
+
+              PROPOSITION COURANTE  (iteration 1)              
+---------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7   Provision 
+---------------------------------------------------------------
+    P1      .    500    .     .     .     .     .       500    
+    P2     500    .     .     .     .     .     .       500    
+    P3      .     .    500   500   500   500   500      2500   
+---------------------------------------------------------------
+           500   500   500   500   500   500   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  500   =    10000
+  (P2, C1)   :   cout=   1  x  qte=  500   =      500
+  (P3, C3)   :   cout=  30  x  qte=  500   =    15000
+  (P3, C4)   :   cout=   3  x  qte=  500   =     1500
+  (P3, C5)   :   cout=  25  x  qte=  500   =    12500
+  (P3, C6)   :   cout=  26  x  qte=  500   =    13000
+  (P3, C7)   :   cout=   3  x  qte=  500   =     1500
+  --------------------------------------------
+  Cout total   Z  =  54000
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  C2
+    Composante 2 : P2  C1
+    Composante 3 : P3  C3  C4  C5  C6  C7
+
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  C2
+    Composante 2 : P2  C1
+    Composante 3 : P3  C3  C4  C5  C6  C7
+
+  Correction connexite - passage 1 :
+    Arete ajoutee (base a zero) : (P1, C3)   cout = 15
+
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  P3  C2  C3  C4  C5  C6  C7
+    Composante 2 : P2  C1
+
+  Correction connexite - passage 2 :
+    Arete ajoutee (base a zero) : (P2, C7)   cout = 19
+
+
+            PROPOSITION (apres correction connexite)           
+---------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7   Provision 
+---------------------------------------------------------------
+    P1      .    500   (0)    .     .     .     .       500    
+    P2     500    .     .     .     .     .    (0)      500    
+    P3      .     .    500   500   500   500   500      2500   
+---------------------------------------------------------------
+           500   500   500   500   500   500   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  500   =    10000
+  (P2, C1)   :   cout=   1  x  qte=  500   =      500
+  (P3, C3)   :   cout=  30  x  qte=  500   =    15000
+  (P3, C4)   :   cout=   3  x  qte=  500   =     1500
+  (P3, C5)   :   cout=  25  x  qte=  500   =    12500
+  (P3, C6)   :   cout=  26  x  qte=  500   =    13000
+  (P3, C7)   :   cout=   3  x  qte=  500   =     1500
+  --------------------------------------------
+  Cout total   Z  =  54000
+
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=31  u3=15
+  Potentiels v : v1=-30  v2=20  v3=15  v4=-12  v5=10  v6=11  v7=-12
+
+  [4] Table des couts potentiels :
+
+            TABLE DES COUTS POTENTIELS  ( u_i + v_j )             
+------------------------------------------------------------------
+           v1=-30  v2=20   v3=15   v4=-12  v5=10   v6=11   v7=-12 
+------------------------------------------------------------------
+   u1=0     -30     [20]    [15]    -12      10      11     -12   
+  u2=31     [1]      51      46      19      41      42     [19]  
+  u3=15     -15      35     [30]    [3]     [25]    [26]    [3]   
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+             TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )             
+-------------------------------------------------------------------------
+              C1       C2       C3       C4       C5       C6       C7   
+-------------------------------------------------------------------------
+    P1       330     [BASE]   [BASE]     28       7        7        32   
+    P2      [BASE]     -1    >>-22<<     11      -19      -15     [BASE] 
+    P3        65       5      [BASE]   [BASE]   [BASE]   [BASE]   [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  --> Arete ameliorante : (P2, C3)   cout marginal = -22
+
+  [6] Ajout de l'arete ameliorante :
+  Ajout de l'arete ameliorante : (P2, C3)
+  Cycle forme :
+    (P2, C3)  +  quantite=0
+    (P3, C3)  -  quantite=500
+    (P3, C7)  +  quantite=500
+    (P2, C7)  -  quantite=0
+  Delta = 0
+  Arete sortante :
+    (P2, C7)  -> sortie de la base
+
+
+  ========================================================
+  ITERATION 2
+  ========================================================
+
+              PROPOSITION COURANTE  (iteration 2)              
+---------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7   Provision 
+---------------------------------------------------------------
+    P1      .    500   (0)    .     .     .     .       500    
+    P2     500    .    (0)    .     .     .     .       500    
+    P3      .     .    500   500   500   500   500      2500   
+---------------------------------------------------------------
+           500   500   500   500   500   500   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  500   =    10000
+  (P2, C1)   :   cout=   1  x  qte=  500   =      500
+  (P3, C3)   :   cout=  30  x  qte=  500   =    15000
+  (P3, C4)   :   cout=   3  x  qte=  500   =     1500
+  (P3, C5)   :   cout=  25  x  qte=  500   =    12500
+  (P3, C6)   :   cout=  26  x  qte=  500   =    13000
+  (P3, C7)   :   cout=   3  x  qte=  500   =     1500
+  --------------------------------------------
+  Cout total   Z  =  54000
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  La proposition est connexe.
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=9  u3=15
+  Potentiels v : v1=-8  v2=20  v3=15  v4=-12  v5=10  v6=11  v7=-12
+
+  [4] Table des couts potentiels :
+
+            TABLE DES COUTS POTENTIELS  ( u_i + v_j )             
+------------------------------------------------------------------
+           v1=-8   v2=20   v3=15   v4=-12  v5=10   v6=11   v7=-12 
+------------------------------------------------------------------
+   u1=0      -8     [20]    [15]    -12      10      11     -12   
+   u2=9     [1]      29     [24]     -3      19      20      -3   
+  u3=15      7       35     [30]    [3]     [25]    [26]    [3]   
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+         TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )          
+------------------------------------------------------------------
+             C1      C2      C3      C4      C5      C6      C7   
+------------------------------------------------------------------
+    P1      308    [BASE]  [BASE]    28      7       7       32   
+    P2     [BASE]    21    [BASE]    33      3       7       22   
+    P3       43      5     [BASE]  [BASE]  [BASE]  [BASE]  [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.
+
+
+  --> Solution OPTIMALE atteinte a l'iteration 2
+
+============================================================
+  PROPOSITION OPTIMALE FINALE
+============================================================
+
+                      PROPOSITION OPTIMALE                     
+---------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7   Provision 
+---------------------------------------------------------------
+    P1      .    500   (0)    .     .     .     .       500    
+    P2     500    .    (0)    .     .     .     .       500    
+    P3      .     .    500   500   500   500   500      2500   
+---------------------------------------------------------------
+           500   500   500   500   500   500   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  500   =    10000
+  (P2, C1)   :   cout=   1  x  qte=  500   =      500
+  (P3, C3)   :   cout=  30  x  qte=  500   =    15000
+  (P3, C4)   :   cout=   3  x  qte=  500   =     1500
+  (P3, C5)   :   cout=  25  x  qte=  500   =    12500
+  (P3, C6)   :   cout=  26  x  qte=  500   =    13000
+  (P3, C7)   :   cout=   3  x  qte=  500   =     1500
+  --------------------------------------------
+  Cout total   Z  =  54000
