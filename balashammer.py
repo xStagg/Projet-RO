@@ -1,6 +1,4 @@
-
 def _calculer_penalites(n, m, couts, lignes_actives, cols_actives):
-
     pen_lignes = []
     for i in range(n):
         if not lignes_actives[i]:
@@ -30,13 +28,14 @@ def _calculer_penalites(n, m, couts, lignes_actives, cols_actives):
     return pen_lignes, pen_cols
 
 
-
 #  AFFICHAGE DES PENALITES
 
 def _afficher_penalites(n, m, pen_lignes, pen_cols,
                         lignes_actives, cols_actives,
                         prov_r, cmd_r):
-
+    """
+    Affiche les penalites courantes de toutes les lignes et colonnes actives.
+    """
     print()
     print("  Penalites des lignes actives :")
     for i in range(n):
@@ -53,22 +52,22 @@ def _afficher_penalites(n, m, pen_lignes, pen_cols,
                   + "  penalite = " + str(pen_cols[j]))
 
 
-
+# ==============================================================
 #  ALGORITHME BALAS-HAMMER
+# ==============================================================
 
 def balas_hammer(n, m, couts, provisions, commandes):
-
     print()
     print("-" * 10)
     print("   ALGORITHME DE BALAS-HAMMER")
     print("-" * 10)
 
-    prop          = [[0] * m for _ in range(n)]
-    prov_r        = provisions[:]
-    cmd_r         = commandes[:]
+    prop           = [[0] * m for _ in range(n)]
+    prov_r         = provisions[:]
+    cmd_r          = commandes[:]
     lignes_actives = [True] * n
     cols_actives   = [True] * m
-    etape         = 1
+    etape          = 1
 
     while any(lignes_actives) and any(cols_actives):
 
@@ -84,7 +83,7 @@ def balas_hammer(n, m, couts, provisions, commandes):
                             lignes_actives, cols_actives,
                             prov_r, cmd_r)
 
-        # 3. Trouver la penalite maximale
+        # 3. Penalite maximale
         max_pen = -1
         for i in range(n):
             if lignes_actives[i] and pen_lignes[i] is not None:
@@ -95,7 +94,7 @@ def balas_hammer(n, m, couts, provisions, commandes):
                 if pen_cols[j] > max_pen:
                     max_pen = pen_cols[j]
 
-        # 4. Collecter toutes les lignes et colonnes atteignant ce maximum
+        # 4. Lignes et colonnes a penalite maximale
         lignes_max = [i for i in range(n)
                       if lignes_actives[i] and pen_lignes[i] == max_pen]
         cols_max   = [j for j in range(m)
@@ -103,15 +102,14 @@ def balas_hammer(n, m, couts, provisions, commandes):
 
         print()
         print("  Penalite maximale = " + str(max_pen))
-
         if lignes_max:
-            print("  Ligne(s) a penalite maximale  : "
+            print("  Ligne(s) a penalite maximale   : "
                   + "  ".join("P" + str(i+1) for i in lignes_max))
         if cols_max:
-            print("  Colonne(s) a penalite maximale: "
+            print("  Colonne(s) a penalite maximale : "
                   + "  ".join("C" + str(j+1) for j in cols_max))
 
-        # 5. Choisir la case a remplir : cout minimal parmi les candidats
+        # 5. Choisir la case de cout minimal parmi les candidats
         meilleur_cout = None
         best_i, best_j = -1, -1
 
@@ -129,33 +127,34 @@ def balas_hammer(n, m, couts, provisions, commandes):
                         meilleur_cout = couts[i][j]
                         best_i, best_j = i, j
 
+        print("  --> Arete choisie : (P" + str(best_i+1) + ", C" + str(best_j+1) + ")"
+              + "   cout unitaire = " + str(meilleur_cout))
+
         # 6. Affectation
         quantite = min(prov_r[best_i], cmd_r[best_j])
         prop[best_i][best_j] = quantite
         prov_r[best_i] -= quantite
         cmd_r[best_j]  -= quantite
 
-        print()
-        print("  --> Arete choisie  : (P" + str(best_i+1) + ", C" + str(best_j+1) + ")"
-              + "   cout unitaire = " + str(meilleur_cout)
-              + "   quantite affectee = " + str(quantite))
+        print("      Quantite affectee = " + str(quantite))
         print("      Provision restante P" + str(best_i+1) + " = " + str(prov_r[best_i])
               + "   Commande restante C" + str(best_j+1) + " = " + str(cmd_r[best_j]))
 
-        # 7. Desactiver la ligne ou la colonne epuisee
+        # 7. Desactiver ligne ou colonne epuisee
         if prov_r[best_i] == 0 and cmd_r[best_j] == 0:
-            # Degenerescence
             lignes_actives[best_i] = False
             cols_actives[best_j]   = False
             nb_lignes_rest = sum(lignes_actives)
             nb_cols_rest   = sum(cols_actives)
+
             if nb_lignes_rest > 0 and nb_cols_rest > 0:
                 print("  [!] Degenerescence : P" + str(best_i+1)
                       + " et C" + str(best_j+1) + " epuisees simultanement")
-                # Chercher une case degeneree sur la ligne ou la colonne
-                # On ajoute une base a 0 sur la case de cout minimal restante
+
+                # Case degeneree : cout minimal restant sur la ligne ou colonne
                 best_degen_cout = None
                 best_di, best_dj = -1, -1
+
                 for j in range(m):
                     if cols_actives[j] and prop[best_i][j] == 0:
                         if best_degen_cout is None or couts[best_i][j] < best_degen_cout:
@@ -166,13 +165,11 @@ def balas_hammer(n, m, couts, provisions, commandes):
                         if best_degen_cout is None or couts[i][best_j] < best_degen_cout:
                             best_degen_cout = couts[i][best_j]
                             best_di, best_dj = i, best_j
+
                 if best_di != -1:
                     prop[best_di][best_dj] = -1
                     print("      Case degeneree ajoutee : (P" + str(best_di+1)
                           + ", C" + str(best_dj+1) + ")  base a zero")
-            else:
-                lignes_actives[best_i] = False
-                cols_actives[best_j]   = False
 
         elif prov_r[best_i] == 0:
             lignes_actives[best_i] = False
@@ -189,43 +186,3 @@ def balas_hammer(n, m, couts, provisions, commandes):
     print()
 
     return prop
-
-
-
-if __name__ == "__main__":
-
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(__file__))
-
-    from affichage import (lire_probleme, afficher_matrice_couts,
-                           afficher_proposition, afficher_cout_total)
-
-    FICHIERS = {str(k): "pb" + str(k) + ".txt" for k in range(1, 13)}
-
-    print()
-    print("-" * 10)
-    print("   test  Algorithme Balas-Hammer")
-    print("-" * 10)
-    print()
-    print("  Problemes disponibles :")
-    for k in range(1, 13):
-        print("    " + str(k).rjust(2) + "  ->  pb" + str(k) + ".txt")
-    print()
-
-    choix = input("  Choisissez un probleme (1-12) : ").strip()
-    if choix not in FICHIERS:
-        print("  Choix invalide.")
-    else:
-        fichier = FICHIERS[choix]
-        if not os.path.isfile(fichier):
-            print("  Fichier '" + fichier + "' introuvable.")
-        else:
-            n, m, couts, provisions, commandes = lire_probleme(fichier)
-            afficher_matrice_couts(n, m, couts, provisions, commandes)
-
-            prop = balas_hammer(n, m, couts, provisions, commandes)
-
-            afficher_proposition(n, m, prop, provisions, commandes,
-                                 "Proposition inital  (Balas-Hammer)")
-            afficher_cout_total(n, m, couts, prop)
