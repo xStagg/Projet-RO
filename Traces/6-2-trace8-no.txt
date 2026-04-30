@@ -1,0 +1,403 @@
+------------------------------
+   PROBLEME DE TRANSPORT 
+------------------------------
+
+  Problemes disponibles :
+     1  ->  pb1.txt
+     2  ->  pb2.txt
+     3  ->  pb3.txt
+     4  ->  pb4.txt
+     5  ->  pb5.txt
+     6  ->  pb6.txt
+     7  ->  pb7.txt
+     8  ->  pb8.txt
+     9  ->  pb9.txt
+    10  ->  pb10.txt
+    11  ->  pb11.txt
+    12  ->  pb12.txt
+     0  ->  Quitter
+
+  Choisissez un probleme (0-12) : 8
+
+  Fichier charge : pb8.txt  (5 x 2)
+
+============================================================
+  Dimensions  : 5 fournisseurs  x  2 clients
+  Provisions  : [100, 200, 100, 200, 200]   somme = 800
+  Commandes   : [300, 500]   somme = 800
+============================================================
+
+  Choisissez l'algorithme pour fixer la proposition initiale :
+    1  ->  Nord-Ouest
+    2  ->  Balas-Hammer
+    0  ->  Changer de probleme
+
+  Votre choix : 1
+
+----------
+Algorithme Nord-Ouest
+----------
+
+  Etape (1,1)  ->  affectation (P1, C1) = 100
+         Provision restante P1 = 0   Commande restante C1 = 200
+         Provision P1 epuisee  ->  on descend a P2
+
+  Etape (2,1)  ->  affectation (P2, C1) = 200
+         Provision restante P2 = 0   Commande restante C1 = 0
+
+  Etape (3,2)  ->  affectation (P3, C2) = 100
+         Provision restante P3 = 0   Commande restante C2 = 400
+         Provision P3 epuisee  ->  on descend a P4
+
+  Etape (4,2)  ->  affectation (P4, C2) = 200
+         Provision restante P4 = 0   Commande restante C2 = 200
+         Provision P4 epuisee  ->  on descend a P5
+
+  Etape (5,2)  ->  affectation (P5, C2) = 200
+         Provision restante P5 = 0   Commande restante C2 = 0
+
+  Proposition Nord-Ouest construite.
+
+
+  Elements disponibles pour ce probleme :
+    1  ->  Matrice des couts
+    2  ->  Proposition de transport + cout total
+    3  ->  Lancer le marche-pied complet (jusqu'a l'optimal)
+    0  ->  Changer de probleme
+
+  Votre choix : 3
+
+        MATRICE DES COUTS        
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      50    20      100    
+    P2      10    50      200    
+    P3      55    40      100    
+    P4      35    45      200    
+    P5      12    8       200    
+---------------------------------
+           300   500             
+
+
+PROPOSITION INITIALE  (Nord-Ouest)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1     100    .       100    
+    P2     200    .       200    
+    P3      .    100      100    
+    P4      .    200      200    
+    P5      .    200      200    
+---------------------------------
+           300   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout=  50  x  qte=  100   =     5000
+  (P2, C1)   :   cout=  10  x  qte=  200   =     2000
+  (P3, C2)   :   cout=  40  x  qte=  100   =     4000
+  (P4, C2)   :   cout=  45  x  qte=  200   =     9000
+  (P5, C2)   :   cout=   8  x  qte=  200   =     1600
+  --------------------------------------------
+  Cout total   Z  =  21600
+
+
+============================================================
+  METHODE DU MARCHE-PIED AVEC POTENTIEL
+============================================================
+
+  ========================================================
+  ITERATION 1
+  ========================================================
+
+PROPOSITION COURANTE  (iteration 1)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1     100    .       100    
+    P2     200    .       200    
+    P3      .    100      100    
+    P4      .    200      200    
+    P5      .    200      200    
+---------------------------------
+           300   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout=  50  x  qte=  100   =     5000
+  (P2, C1)   :   cout=  10  x  qte=  200   =     2000
+  (P3, C2)   :   cout=  40  x  qte=  100   =     4000
+  (P4, C2)   :   cout=  45  x  qte=  200   =     9000
+  (P5, C2)   :   cout=   8  x  qte=  200   =     1600
+  --------------------------------------------
+  Cout total   Z  =  21600
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  P2  C1
+    Composante 2 : P3  P4  P5  C2
+
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  P2  C1
+    Composante 2 : P3  P4  P5  C2
+
+  Correction connexite - passage 1 :
+    Arete ajoutee (base a zero) : (P5, C1)   cout = 12
+
+
+PROPOSITION (apres correction connexite)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1     100    .       100    
+    P2     200    .       200    
+    P3      .    100      100    
+    P4      .    200      200    
+    P5     (0)   200      200    
+---------------------------------
+           300   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout=  50  x  qte=  100   =     5000
+  (P2, C1)   :   cout=  10  x  qte=  200   =     2000
+  (P3, C2)   :   cout=  40  x  qte=  100   =     4000
+  (P4, C2)   :   cout=  45  x  qte=  200   =     9000
+  (P5, C2)   :   cout=   8  x  qte=  200   =     1600
+  --------------------------------------------
+  Cout total   Z  =  21600
+
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=-40  u3=-6  u4=-1  u5=-38
+  Potentiels v : v1=50  v2=46
+
+  [4] Table des couts potentiels :
+
+TABLE DES COUTS POTENTIELS  ( u_i + v_j )
+--------------------------
+           v1=50   v2=46  
+--------------------------
+   u1=0     [50]     46   
+  u2=-40    [10]     6    
+  u3=-6      44     [40]  
+  u4=-1      49     [45]  
+  u5=-38    [12]    [8]   
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )
+----------------------------
+              C1       C2   
+----------------------------
+    P1      [BASE]  >>-26<< 
+    P2      [BASE]     44   
+    P3        11     [BASE] 
+    P4       -14     [BASE] 
+    P5      [BASE]   [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  --> Arete ameliorante : (P1, C2)   cout marginal = -26
+
+  [6] Ajout de l'arete ameliorante :
+  Ajout de l'arete ameliorante : (P1, C2)
+  Cycle forme :
+    (P1, C2)  +  quantite=0
+    (P5, C2)  -  quantite=200
+    (P5, C1)  +  quantite=0
+    (P1, C1)  -  quantite=100
+  Delta = 100
+  Arete(s) sortante(s) :
+    (P1, C1)  -> sortie de la base
+
+
+  ========================================================
+  ITERATION 2
+  ========================================================
+
+PROPOSITION COURANTE  (iteration 2)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    100      100    
+    P2     200    .       200    
+    P3      .    100      100    
+    P4      .    200      200    
+    P5     100   100      200    
+---------------------------------
+           300   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  100   =     2000
+  (P2, C1)   :   cout=  10  x  qte=  200   =     2000
+  (P3, C2)   :   cout=  40  x  qte=  100   =     4000
+  (P4, C2)   :   cout=  45  x  qte=  200   =     9000
+  (P5, C1)   :   cout=  12  x  qte=  100   =     1200
+  (P5, C2)   :   cout=   8  x  qte=  100   =      800
+  --------------------------------------------
+  Cout total   Z  =  19000
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  La proposition est connexe.
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=-14  u3=20  u4=25  u5=-12
+  Potentiels v : v1=24  v2=20
+
+  [4] Table des couts potentiels :
+
+TABLE DES COUTS POTENTIELS  ( u_i + v_j )
+--------------------------
+           v1=24   v2=20  
+--------------------------
+   u1=0      24     [20]  
+  u2=-14    [10]     6    
+  u3=20      44     [40]  
+  u4=25      49     [45]  
+  u5=-12    [12]    [8]   
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )
+----------------------------
+              C1       C2   
+----------------------------
+    P1        26     [BASE] 
+    P2      [BASE]     44   
+    P3        11     [BASE] 
+    P4     >>-14<<   [BASE] 
+    P5      [BASE]   [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  --> Arete ameliorante : (P4, C1)   cout marginal = -14
+
+  [6] Ajout de l'arete ameliorante :
+  Ajout de l'arete ameliorante : (P4, C1)
+  Cycle forme :
+    (P4, C1)  +  quantite=0
+    (P5, C1)  -  quantite=100
+    (P5, C2)  +  quantite=100
+    (P4, C2)  -  quantite=200
+  Delta = 100
+  Arete(s) sortante(s) :
+    (P5, C1)  -> sortie de la base
+
+
+  ========================================================
+  ITERATION 3
+  ========================================================
+
+PROPOSITION COURANTE  (iteration 3)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    100      100    
+    P2     200    .       200    
+    P3      .    100      100    
+    P4     100   100      200    
+    P5      .    200      200    
+---------------------------------
+           300   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  100   =     2000
+  (P2, C1)   :   cout=  10  x  qte=  200   =     2000
+  (P3, C2)   :   cout=  40  x  qte=  100   =     4000
+  (P4, C1)   :   cout=  35  x  qte=  100   =     3500
+  (P4, C2)   :   cout=  45  x  qte=  100   =     4500
+  (P5, C2)   :   cout=   8  x  qte=  200   =     1600
+  --------------------------------------------
+  Cout total   Z  =  17600
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  La proposition est connexe.
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=0  u3=20  u4=25  u5=-12
+  Potentiels v : v1=10  v2=20
+
+  [4] Table des couts potentiels :
+
+TABLE DES COUTS POTENTIELS  ( u_i + v_j )
+--------------------------
+           v1=10   v2=20  
+--------------------------
+   u1=0      10     [20]  
+   u2=0     [10]     20   
+  u3=20      30     [40]  
+  u4=25     [35]    [45]  
+  u5=-12     -2     [8]   
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )
+--------------------------
+             C1      C2   
+--------------------------
+    P1       40    [BASE] 
+    P2     [BASE]    30   
+    P3       25    [BASE] 
+    P4     [BASE]  [BASE] 
+    P5       14    [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.
+
+
+  --> Solution OPTIMALE atteinte a l'iteration 3
+
+============================================================
+  PROPOSITION OPTIMALE FINALE
+============================================================
+
+       PROPOSITION OPTIMALE      
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    100      100    
+    P2     200    .       200    
+    P3      .    100      100    
+    P4     100   100      200    
+    P5      .    200      200    
+---------------------------------
+           300   500             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=  20  x  qte=  100   =     2000
+  (P2, C1)   :   cout=  10  x  qte=  200   =     2000
+  (P3, C2)   :   cout=  40  x  qte=  100   =     4000
+  (P4, C1)   :   cout=  35  x  qte=  100   =     3500
+  (P4, C2)   :   cout=  45  x  qte=  100   =     4500
+  (P5, C2)   :   cout=   8  x  qte=  200   =     1600
+  --------------------------------------------
+  Cout total   Z  =  17600

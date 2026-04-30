@@ -1,0 +1,429 @@
+------------------------------
+   PROBLEME DE TRANSPORT 
+------------------------------
+
+  Problemes disponibles :
+     1  ->  pb1.txt
+     2  ->  pb2.txt
+     3  ->  pb3.txt
+     4  ->  pb4.txt
+     5  ->  pb5.txt
+     6  ->  pb6.txt
+     7  ->  pb7.txt
+     8  ->  pb8.txt
+     9  ->  pb9.txt
+    10  ->  pb10.txt
+    11  ->  pb11.txt
+    12  ->  pb12.txt
+     0  ->  Quitter
+
+  Choisissez un probleme (0-12) : 12
+
+  Fichier charge : pb12.txt  (10 x 16)
+
+============================================================
+  Dimensions  : 10 fournisseurs  x  16 clients
+  Provisions  : [160, 160, 160, 160, 160, 160, 160, 160, 160, 160]   somme = 1600
+  Commandes   : [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]   somme = 1600
+============================================================
+
+  Choisissez l'algorithme pour fixer la proposition initiale :
+    1  ->  Nord-Ouest
+    2  ->  Balas-Hammer
+    0  ->  Changer de probleme
+
+  Votre choix : 1
+
+----------
+Algorithme Nord-Ouest
+----------
+
+  Etape (1,1)  ->  affectation (P1, C1) = 100
+         Provision restante P1 = 60   Commande restante C1 = 0
+         Commande C1 epuisee  ->  on avance a C2
+
+  Etape (1,2)  ->  affectation (P1, C2) = 60
+         Provision restante P1 = 0   Commande restante C2 = 40
+         Provision P1 epuisee  ->  on descend a P2
+
+  Etape (2,2)  ->  affectation (P2, C2) = 40
+         Provision restante P2 = 120   Commande restante C2 = 0
+         Commande C2 epuisee  ->  on avance a C3
+
+  Etape (2,3)  ->  affectation (P2, C3) = 100
+         Provision restante P2 = 20   Commande restante C3 = 0
+         Commande C3 epuisee  ->  on avance a C4
+
+  Etape (2,4)  ->  affectation (P2, C4) = 20
+         Provision restante P2 = 0   Commande restante C4 = 80
+         Provision P2 epuisee  ->  on descend a P3
+
+  Etape (3,4)  ->  affectation (P3, C4) = 80
+         Provision restante P3 = 80   Commande restante C4 = 0
+         Commande C4 epuisee  ->  on avance a C5
+
+  Etape (3,5)  ->  affectation (P3, C5) = 80
+         Provision restante P3 = 0   Commande restante C5 = 20
+         Provision P3 epuisee  ->  on descend a P4
+
+  Etape (4,5)  ->  affectation (P4, C5) = 20
+         Provision restante P4 = 140   Commande restante C5 = 0
+         Commande C5 epuisee  ->  on avance a C6
+
+  Etape (4,6)  ->  affectation (P4, C6) = 100
+         Provision restante P4 = 40   Commande restante C6 = 0
+         Commande C6 epuisee  ->  on avance a C7
+
+  Etape (4,7)  ->  affectation (P4, C7) = 40
+         Provision restante P4 = 0   Commande restante C7 = 60
+         Provision P4 epuisee  ->  on descend a P5
+
+  Etape (5,7)  ->  affectation (P5, C7) = 60
+         Provision restante P5 = 100   Commande restante C7 = 0
+         Commande C7 epuisee  ->  on avance a C8
+
+  Etape (5,8)  ->  affectation (P5, C8) = 100
+         Provision restante P5 = 0   Commande restante C8 = 0
+
+  Etape (6,9)  ->  affectation (P6, C9) = 100
+         Provision restante P6 = 60   Commande restante C9 = 0
+         Commande C9 epuisee  ->  on avance a C10
+
+  Etape (6,10)  ->  affectation (P6, C10) = 60
+         Provision restante P6 = 0   Commande restante C10 = 40
+         Provision P6 epuisee  ->  on descend a P7
+
+  Etape (7,10)  ->  affectation (P7, C10) = 40
+         Provision restante P7 = 120   Commande restante C10 = 0
+         Commande C10 epuisee  ->  on avance a C11
+
+  Etape (7,11)  ->  affectation (P7, C11) = 100
+         Provision restante P7 = 20   Commande restante C11 = 0
+         Commande C11 epuisee  ->  on avance a C12
+
+  Etape (7,12)  ->  affectation (P7, C12) = 20
+         Provision restante P7 = 0   Commande restante C12 = 80
+         Provision P7 epuisee  ->  on descend a P8
+
+  Etape (8,12)  ->  affectation (P8, C12) = 80
+         Provision restante P8 = 80   Commande restante C12 = 0
+         Commande C12 epuisee  ->  on avance a C13
+
+  Etape (8,13)  ->  affectation (P8, C13) = 80
+         Provision restante P8 = 0   Commande restante C13 = 20
+         Provision P8 epuisee  ->  on descend a P9
+
+  Etape (9,13)  ->  affectation (P9, C13) = 20
+         Provision restante P9 = 140   Commande restante C13 = 0
+         Commande C13 epuisee  ->  on avance a C14
+
+  Etape (9,14)  ->  affectation (P9, C14) = 100
+         Provision restante P9 = 40   Commande restante C14 = 0
+         Commande C14 epuisee  ->  on avance a C15
+
+  Etape (9,15)  ->  affectation (P9, C15) = 40
+         Provision restante P9 = 0   Commande restante C15 = 60
+         Provision P9 epuisee  ->  on descend a P10
+
+  Etape (10,15)  ->  affectation (P10, C15) = 60
+         Provision restante P10 = 100   Commande restante C15 = 0
+         Commande C15 epuisee  ->  on avance a C16
+
+  Etape (10,16)  ->  affectation (P10, C16) = 100
+         Provision restante P10 = 0   Commande restante C16 = 0
+
+  Proposition Nord-Ouest construite.
+
+
+  Elements disponibles pour ce probleme :
+    1  ->  Matrice des couts
+    2  ->  Proposition de transport + cout total
+    3  ->  Lancer le marche-pied complet (jusqu'a l'optimal)
+    0  ->  Changer de probleme
+
+  Votre choix : 3
+
+                                                  MATRICE DES COUTS                                                  
+---------------------------------------------------------------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7    C8    C9   C10   C11   C12   C13   C14   C15   C16   Provision 
+---------------------------------------------------------------------------------------------------------------------
+    P1     186   185   184   183   182   181   180   179   178   177   176   175   174   173   172   171      160    
+    P2     166   165   164   163   162   161   160   159   158   157   156   155   154   153   152   151      160    
+    P3     156   155   154   153   152   151   150   149   148   147   146   145   144   143   142   141      160    
+    P4     136   135   134   133   132   131   130   129   128   127   126   125   124   123   122   121      160    
+    P5     116   115   114   113   112   111   110   109   108   107   106   105   104   103   102   101      160    
+    P6      96    95    94    93    92    91    90    89    88    87    86    85    84    83    82    81      160    
+    P7      76    75    74    73    72    71    70    69    68    67    66    65    64    63    62    61      160    
+    P8      56    55    54    53    52    51    50    49    48    47    46    45    44    43    42    41      160    
+    P9      36    35    34    33    32    31    30    29    28    27    26    25    24    23    22    21      160    
+   P10      16    15    14    13    12    11    10    9     8     7     6     5     4     3     2     1       160    
+---------------------------------------------------------------------------------------------------------------------
+           100   100   100   100   100   100   100   100   100   100   100   100   100   100   100   100             
+
+
+                                          PROPOSITION INITIALE  (Nord-Ouest)                                         
+---------------------------------------------------------------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7    C8    C9   C10   C11   C12   C13   C14   C15   C16   Provision 
+---------------------------------------------------------------------------------------------------------------------
+    P1     100    60    .     .     .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P2      .     40   100    20    .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P3      .     .     .     80    80    .     .     .     .     .     .     .     .     .     .     .       160    
+    P4      .     .     .     .     20   100    40    .     .     .     .     .     .     .     .     .       160    
+    P5      .     .     .     .     .     .     60   100    .     .     .     .     .     .     .     .       160    
+    P6      .     .     .     .     .     .     .     .    100    60    .     .     .     .     .     .       160    
+    P7      .     .     .     .     .     .     .     .     .     40   100    20    .     .     .     .       160    
+    P8      .     .     .     .     .     .     .     .     .     .     .     80    80    .     .     .       160    
+    P9      .     .     .     .     .     .     .     .     .     .     .     .     20   100    40    .       160    
+   P10      .     .     .     .     .     .     .     .     .     .     .     .     .     .     60   100      160    
+---------------------------------------------------------------------------------------------------------------------
+           100   100   100   100   100   100   100   100   100   100   100   100   100   100   100   100             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout= 186  x  qte=  100   =    18600
+  (P1, C2)   :   cout= 185  x  qte=   60   =    11100
+  (P2, C2)   :   cout= 165  x  qte=   40   =     6600
+  (P2, C3)   :   cout= 164  x  qte=  100   =    16400
+  (P2, C4)   :   cout= 163  x  qte=   20   =     3260
+  (P3, C4)   :   cout= 153  x  qte=   80   =    12240
+  (P3, C5)   :   cout= 152  x  qte=   80   =    12160
+  (P4, C5)   :   cout= 132  x  qte=   20   =     2640
+  (P4, C6)   :   cout= 131  x  qte=  100   =    13100
+  (P4, C7)   :   cout= 130  x  qte=   40   =     5200
+  (P5, C7)   :   cout= 110  x  qte=   60   =     6600
+  (P5, C8)   :   cout= 109  x  qte=  100   =    10900
+  (P6, C9)   :   cout=  88  x  qte=  100   =     8800
+  (P6, C10)   :   cout=  87  x  qte=   60   =     5220
+  (P7, C10)   :   cout=  67  x  qte=   40   =     2680
+  (P7, C11)   :   cout=  66  x  qte=  100   =     6600
+  (P7, C12)   :   cout=  65  x  qte=   20   =     1300
+  (P8, C12)   :   cout=  45  x  qte=   80   =     3600
+  (P8, C13)   :   cout=  44  x  qte=   80   =     3520
+  (P9, C13)   :   cout=  24  x  qte=   20   =      480
+  (P9, C14)   :   cout=  23  x  qte=  100   =     2300
+  (P9, C15)   :   cout=  22  x  qte=   40   =      880
+  (P10, C15)   :   cout=   2  x  qte=   60   =      120
+  (P10, C16)   :   cout=   1  x  qte=  100   =      100
+  --------------------------------------------
+  Cout total   Z  =  154400
+
+
+============================================================
+  METHODE DU MARCHE-PIED AVEC POTENTIEL
+============================================================
+
+  ========================================================
+  ITERATION 1
+  ========================================================
+
+                                         PROPOSITION COURANTE  (iteration 1)                                         
+---------------------------------------------------------------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7    C8    C9   C10   C11   C12   C13   C14   C15   C16   Provision 
+---------------------------------------------------------------------------------------------------------------------
+    P1     100    60    .     .     .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P2      .     40   100    20    .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P3      .     .     .     80    80    .     .     .     .     .     .     .     .     .     .     .       160    
+    P4      .     .     .     .     20   100    40    .     .     .     .     .     .     .     .     .       160    
+    P5      .     .     .     .     .     .     60   100    .     .     .     .     .     .     .     .       160    
+    P6      .     .     .     .     .     .     .     .    100    60    .     .     .     .     .     .       160    
+    P7      .     .     .     .     .     .     .     .     .     40   100    20    .     .     .     .       160    
+    P8      .     .     .     .     .     .     .     .     .     .     .     80    80    .     .     .       160    
+    P9      .     .     .     .     .     .     .     .     .     .     .     .     20   100    40    .       160    
+   P10      .     .     .     .     .     .     .     .     .     .     .     .     .     .     60   100      160    
+---------------------------------------------------------------------------------------------------------------------
+           100   100   100   100   100   100   100   100   100   100   100   100   100   100   100   100             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout= 186  x  qte=  100   =    18600
+  (P1, C2)   :   cout= 185  x  qte=   60   =    11100
+  (P2, C2)   :   cout= 165  x  qte=   40   =     6600
+  (P2, C3)   :   cout= 164  x  qte=  100   =    16400
+  (P2, C4)   :   cout= 163  x  qte=   20   =     3260
+  (P3, C4)   :   cout= 153  x  qte=   80   =    12240
+  (P3, C5)   :   cout= 152  x  qte=   80   =    12160
+  (P4, C5)   :   cout= 132  x  qte=   20   =     2640
+  (P4, C6)   :   cout= 131  x  qte=  100   =    13100
+  (P4, C7)   :   cout= 130  x  qte=   40   =     5200
+  (P5, C7)   :   cout= 110  x  qte=   60   =     6600
+  (P5, C8)   :   cout= 109  x  qte=  100   =    10900
+  (P6, C9)   :   cout=  88  x  qte=  100   =     8800
+  (P6, C10)   :   cout=  87  x  qte=   60   =     5220
+  (P7, C10)   :   cout=  67  x  qte=   40   =     2680
+  (P7, C11)   :   cout=  66  x  qte=  100   =     6600
+  (P7, C12)   :   cout=  65  x  qte=   20   =     1300
+  (P8, C12)   :   cout=  45  x  qte=   80   =     3600
+  (P8, C13)   :   cout=  44  x  qte=   80   =     3520
+  (P9, C13)   :   cout=  24  x  qte=   20   =      480
+  (P9, C14)   :   cout=  23  x  qte=  100   =     2300
+  (P9, C15)   :   cout=  22  x  qte=   40   =      880
+  (P10, C15)   :   cout=   2  x  qte=   60   =      120
+  (P10, C16)   :   cout=   1  x  qte=  100   =      100
+  --------------------------------------------
+  Cout total   Z  =  154400
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  P2  P3  P4  P5  C1  C2  C3  C4  C5  C6  C7  C8
+    Composante 2 : P6  P7  P8  P9  P10  C9  C10  C11  C12  C13  C14  C15  C16
+
+  [NON CONNEXE]  La proposition est non connexe.
+  Sous-graphes connexes :
+    Composante 1 : P1  P2  P3  P4  P5  C1  C2  C3  C4  C5  C6  C7  C8
+    Composante 2 : P6  P7  P8  P9  P10  C9  C10  C11  C12  C13  C14  C15  C16
+
+  Correction connexite - passage 1 :
+    Arete ajoutee (base a zero) : (P10, C8)   cout = 9
+
+
+                                       PROPOSITION (apres correction connexite)                                      
+---------------------------------------------------------------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7    C8    C9   C10   C11   C12   C13   C14   C15   C16   Provision 
+---------------------------------------------------------------------------------------------------------------------
+    P1     100    60    .     .     .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P2      .     40   100    20    .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P3      .     .     .     80    80    .     .     .     .     .     .     .     .     .     .     .       160    
+    P4      .     .     .     .     20   100    40    .     .     .     .     .     .     .     .     .       160    
+    P5      .     .     .     .     .     .     60   100    .     .     .     .     .     .     .     .       160    
+    P6      .     .     .     .     .     .     .     .    100    60    .     .     .     .     .     .       160    
+    P7      .     .     .     .     .     .     .     .     .     40   100    20    .     .     .     .       160    
+    P8      .     .     .     .     .     .     .     .     .     .     .     80    80    .     .     .       160    
+    P9      .     .     .     .     .     .     .     .     .     .     .     .     20   100    40    .       160    
+   P10      .     .     .     .     .     .     .    (0)    .     .     .     .     .     .     60   100      160    
+---------------------------------------------------------------------------------------------------------------------
+           100   100   100   100   100   100   100   100   100   100   100   100   100   100   100   100             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout= 186  x  qte=  100   =    18600
+  (P1, C2)   :   cout= 185  x  qte=   60   =    11100
+  (P2, C2)   :   cout= 165  x  qte=   40   =     6600
+  (P2, C3)   :   cout= 164  x  qte=  100   =    16400
+  (P2, C4)   :   cout= 163  x  qte=   20   =     3260
+  (P3, C4)   :   cout= 153  x  qte=   80   =    12240
+  (P3, C5)   :   cout= 152  x  qte=   80   =    12160
+  (P4, C5)   :   cout= 132  x  qte=   20   =     2640
+  (P4, C6)   :   cout= 131  x  qte=  100   =    13100
+  (P4, C7)   :   cout= 130  x  qte=   40   =     5200
+  (P5, C7)   :   cout= 110  x  qte=   60   =     6600
+  (P5, C8)   :   cout= 109  x  qte=  100   =    10900
+  (P6, C9)   :   cout=  88  x  qte=  100   =     8800
+  (P6, C10)   :   cout=  87  x  qte=   60   =     5220
+  (P7, C10)   :   cout=  67  x  qte=   40   =     2680
+  (P7, C11)   :   cout=  66  x  qte=  100   =     6600
+  (P7, C12)   :   cout=  65  x  qte=   20   =     1300
+  (P8, C12)   :   cout=  45  x  qte=   80   =     3600
+  (P8, C13)   :   cout=  44  x  qte=   80   =     3520
+  (P9, C13)   :   cout=  24  x  qte=   20   =      480
+  (P9, C14)   :   cout=  23  x  qte=  100   =     2300
+  (P9, C15)   :   cout=  22  x  qte=   40   =      880
+  (P10, C15)   :   cout=   2  x  qte=   60   =      120
+  (P10, C16)   :   cout=   1  x  qte=  100   =      100
+  --------------------------------------------
+  Cout total   Z  =  154400
+
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=-20  u3=-30  u4=-50  u5=-70  u6=-90  u7=-110  u8=-130  u9=-150  u10=-170
+  Potentiels v : v1=186  v2=185  v3=184  v4=183  v5=182  v6=181  v7=180  v8=179  v9=178  v10=177  v11=176  v12=175  v13=174  v14=173  v15=172  v16=171
+
+  [4] Table des couts potentiels :
+
+                                                        TABLE DES COUTS POTENTIELS  ( u_i + v_j )                                                         
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+            v1=186   v2=185   v3=184   v4=183   v5=182   v6=181   v7=180   v8=179   v9=178  v10=177  v11=176  v12=175  v13=174  v14=173  v15=172  v16=171 
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+   u1=0     [186]    [185]     184      183      182      181      180      179      178      177      176      175      174      173      172      171   
+  u2=-20     166     [165]    [164]    [163]     162      161      160      159      158      157      156      155      154      153      152      151   
+  u3=-30     156      155      154     [153]    [152]     151      150      149      148      147      146      145      144      143      142      141   
+  u4=-50     136      135      134      133     [132]    [131]    [130]     129      128      127      126      125      124      123      122      121   
+  u5=-70     116      115      114      113      112      111     [110]    [109]     108      107      106      105      104      103      102      101   
+  u6=-90      96       95       94       93       92       91       90       89      [88]     [87]      86       85       84       83       82       81   
+ u7=-110      76       75       74       73       72       71       70       69       68      [67]     [66]     [65]      64       63       62       61   
+ u8=-130      56       55       54       53       52       51       50       49       48       47       46      [45]     [44]      43       42       41   
+ u9=-150      36       35       34       33       32       31       30       29       28       27       26       25      [24]     [23]     [22]      21   
+ u10=-170     16       15       14       13       12       11       10      [9]       8        7        6        5        4        3       [2]      [1]   
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+                                             TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )                                              
+------------------------------------------------------------------------------------------------------------------------------------------
+             C1      C2      C3      C4      C5      C6      C7      C8      C9     C10     C11     C12     C13     C14     C15     C16   
+------------------------------------------------------------------------------------------------------------------------------------------
+    P1     [BASE]  [BASE]    0       0       0       0       0       0       0       0       0       0       0       0       0       0    
+    P2       0     [BASE]  [BASE]  [BASE]    0       0       0       0       0       0       0       0       0       0       0       0    
+    P3       0       0       0     [BASE]  [BASE]    0       0       0       0       0       0       0       0       0       0       0    
+    P4       0       0       0       0     [BASE]  [BASE]  [BASE]    0       0       0       0       0       0       0       0       0    
+    P5       0       0       0       0       0       0     [BASE]  [BASE]    0       0       0       0       0       0       0       0    
+    P6       0       0       0       0       0       0       0       0     [BASE]  [BASE]    0       0       0       0       0       0    
+    P7       0       0       0       0       0       0       0       0       0     [BASE]  [BASE]  [BASE]    0       0       0       0    
+    P8       0       0       0       0       0       0       0       0       0       0       0     [BASE]  [BASE]    0       0       0    
+    P9       0       0       0       0       0       0       0       0       0       0       0       0     [BASE]  [BASE]  [BASE]    0    
+   P10       0       0       0       0       0       0       0     [BASE]    0       0       0       0       0       0     [BASE]  [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.
+
+
+  --> Solution OPTIMALE atteinte a l'iteration 1
+
+============================================================
+  PROPOSITION OPTIMALE FINALE
+============================================================
+
+                                                 PROPOSITION OPTIMALE                                                
+---------------------------------------------------------------------------------------------------------------------
+            C1    C2    C3    C4    C5    C6    C7    C8    C9   C10   C11   C12   C13   C14   C15   C16   Provision 
+---------------------------------------------------------------------------------------------------------------------
+    P1     100    60    .     .     .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P2      .     40   100    20    .     .     .     .     .     .     .     .     .     .     .     .       160    
+    P3      .     .     .     80    80    .     .     .     .     .     .     .     .     .     .     .       160    
+    P4      .     .     .     .     20   100    40    .     .     .     .     .     .     .     .     .       160    
+    P5      .     .     .     .     .     .     60   100    .     .     .     .     .     .     .     .       160    
+    P6      .     .     .     .     .     .     .     .    100    60    .     .     .     .     .     .       160    
+    P7      .     .     .     .     .     .     .     .     .     40   100    20    .     .     .     .       160    
+    P8      .     .     .     .     .     .     .     .     .     .     .     80    80    .     .     .       160    
+    P9      .     .     .     .     .     .     .     .     .     .     .     .     20   100    40    .       160    
+   P10      .     .     .     .     .     .     .    (0)    .     .     .     .     .     .     60   100      160    
+---------------------------------------------------------------------------------------------------------------------
+           100   100   100   100   100   100   100   100   100   100   100   100   100   100   100   100             
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout= 186  x  qte=  100   =    18600
+  (P1, C2)   :   cout= 185  x  qte=   60   =    11100
+  (P2, C2)   :   cout= 165  x  qte=   40   =     6600
+  (P2, C3)   :   cout= 164  x  qte=  100   =    16400
+  (P2, C4)   :   cout= 163  x  qte=   20   =     3260
+  (P3, C4)   :   cout= 153  x  qte=   80   =    12240
+  (P3, C5)   :   cout= 152  x  qte=   80   =    12160
+  (P4, C5)   :   cout= 132  x  qte=   20   =     2640
+  (P4, C6)   :   cout= 131  x  qte=  100   =    13100
+  (P4, C7)   :   cout= 130  x  qte=   40   =     5200
+  (P5, C7)   :   cout= 110  x  qte=   60   =     6600
+  (P5, C8)   :   cout= 109  x  qte=  100   =    10900
+  (P6, C9)   :   cout=  88  x  qte=  100   =     8800
+  (P6, C10)   :   cout=  87  x  qte=   60   =     5220
+  (P7, C10)   :   cout=  67  x  qte=   40   =     2680
+  (P7, C11)   :   cout=  66  x  qte=  100   =     6600
+  (P7, C12)   :   cout=  65  x  qte=   20   =     1300
+  (P8, C12)   :   cout=  45  x  qte=   80   =     3600
+  (P8, C13)   :   cout=  44  x  qte=   80   =     3520
+  (P9, C13)   :   cout=  24  x  qte=   20   =      480
+  (P9, C14)   :   cout=  23  x  qte=  100   =     2300
+  (P9, C15)   :   cout=  22  x  qte=   40   =      880
+  (P10, C15)   :   cout=   2  x  qte=   60   =      120
+  (P10, C16)   :   cout=   1  x  qte=  100   =      100
+  --------------------------------------------
+  Cout total   Z  =  154400

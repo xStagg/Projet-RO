@@ -1,0 +1,243 @@
+------------------------------
+   PROBLEME DE TRANSPORT 
+------------------------------
+
+  Problemes disponibles :
+     1  ->  pb1.txt
+     2  ->  pb2.txt
+     3  ->  pb3.txt
+     4  ->  pb4.txt
+     5  ->  pb5.txt
+     6  ->  pb6.txt
+     7  ->  pb7.txt
+     8  ->  pb8.txt
+     9  ->  pb9.txt
+    10  ->  pb10.txt
+    11  ->  pb11.txt
+    12  ->  pb12.txt
+     0  ->  Quitter
+
+  Choisissez un probleme (0-12) : 4
+
+  Fichier charge : pb4.txt  (2 x 2)
+
+============================================================
+  Dimensions  : 2 fournisseurs  x  2 clients
+  Provisions  : [600, 500]   somme = 1100
+  Commandes   : [100, 1000]   somme = 1100
+============================================================
+
+  Choisissez l'algorithme pour fixer la proposition initiale :
+    1  ->  Nord-Ouest
+    2  ->  Balas-Hammer
+    0  ->  Changer de probleme
+
+  Votre choix : 1
+
+----------
+Algorithme Nord-Ouest
+----------
+
+  Etape (1,1)  ->  affectation (P1, C1) = 100
+         Provision restante P1 = 500   Commande restante C1 = 0
+         Commande C1 epuisee  ->  on avance a C2
+
+  Etape (1,2)  ->  affectation (P1, C2) = 500
+         Provision restante P1 = 0   Commande restante C2 = 500
+         Provision P1 epuisee  ->  on descend a P2
+
+  Etape (2,2)  ->  affectation (P2, C2) = 500
+         Provision restante P2 = 0   Commande restante C2 = 0
+
+  Proposition Nord-Ouest construite.
+
+
+  Elements disponibles pour ce probleme :
+    1  ->  Matrice des couts
+    2  ->  Proposition de transport + cout total
+    3  ->  Lancer le marche-pied complet (jusqu'a l'optimal)
+    0  ->  Changer de probleme
+
+  Votre choix : 3
+
+        MATRICE DES COUTS        
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      30    1       600    
+    P2      1     30      500    
+---------------------------------
+           100   1000            
+
+
+PROPOSITION INITIALE  (Nord-Ouest)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1     100   500      600    
+    P2      .    500      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout=  30  x  qte=  100   =     3000
+  (P1, C2)   :   cout=   1  x  qte=  500   =      500
+  (P2, C2)   :   cout=  30  x  qte=  500   =    15000
+  --------------------------------------------
+  Cout total   Z  =  18500
+
+
+============================================================
+  METHODE DU MARCHE-PIED AVEC POTENTIEL
+============================================================
+
+  ========================================================
+  ITERATION 1
+  ========================================================
+
+PROPOSITION COURANTE  (iteration 1)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1     100   500      600    
+    P2      .    500      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C1)   :   cout=  30  x  qte=  100   =     3000
+  (P1, C2)   :   cout=   1  x  qte=  500   =      500
+  (P2, C2)   :   cout=  30  x  qte=  500   =    15000
+  --------------------------------------------
+  Cout total   Z  =  18500
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  La proposition est connexe.
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=29
+  Potentiels v : v1=30  v2=1
+
+  [4] Table des couts potentiels :
+
+TABLE DES COUTS POTENTIELS  ( u_i + v_j )
+--------------------------
+           v1=30    v2=1  
+--------------------------
+   u1=0     [30]    [1]   
+  u2=29      59     [30]  
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )
+----------------------------
+              C1       C2   
+----------------------------
+    P1      [BASE]   [BASE] 
+    P2     >>-58<<   [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  --> Arete ameliorante : (P2, C1)   cout marginal = -58
+
+  [6] Ajout de l'arete ameliorante :
+  Ajout de l'arete ameliorante : (P2, C1)
+  Cycle forme :
+    (P2, C1)  +  quantite=0
+    (P1, C1)  -  quantite=100
+    (P1, C2)  +  quantite=500
+    (P2, C2)  -  quantite=500
+  Delta = 100
+  Arete(s) sortante(s) :
+    (P1, C1)  -> sortie de la base
+
+
+  ========================================================
+  ITERATION 2
+  ========================================================
+
+PROPOSITION COURANTE  (iteration 2)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    600      600    
+    P2     100   400      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=   1  x  qte=  600   =      600
+  (P2, C1)   :   cout=   1  x  qte=  100   =      100
+  (P2, C2)   :   cout=  30  x  qte=  400   =    12000
+  --------------------------------------------
+  Cout total   Z  =  12700
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  La proposition est connexe.
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=29
+  Potentiels v : v1=-28  v2=1
+
+  [4] Table des couts potentiels :
+
+TABLE DES COUTS POTENTIELS  ( u_i + v_j )
+--------------------------
+           v1=-28   v2=1  
+--------------------------
+   u1=0     -28     [1]   
+  u2=29     [1]     [30]  
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )
+--------------------------
+             C1      C2   
+--------------------------
+    P1       58    [BASE] 
+    P2     [BASE]  [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.
+
+
+  --> Solution OPTIMALE atteinte a l'iteration 2
+
+============================================================
+  PROPOSITION OPTIMALE FINALE
+============================================================
+
+       PROPOSITION OPTIMALE      
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    600      600    
+    P2     100   400      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=   1  x  qte=  600   =      600
+  (P2, C1)   :   cout=   1  x  qte=  100   =      100
+  (P2, C2)   :   cout=  30  x  qte=  400   =    12000
+  --------------------------------------------
+  Cout total   Z  =  12700

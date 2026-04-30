@@ -1,0 +1,210 @@
+------------------------------
+   PROBLEME DE TRANSPORT 
+------------------------------
+
+  Problemes disponibles :
+     1  ->  pb1.txt
+     2  ->  pb2.txt
+     3  ->  pb3.txt
+     4  ->  pb4.txt
+     5  ->  pb5.txt
+     6  ->  pb6.txt
+     7  ->  pb7.txt
+     8  ->  pb8.txt
+     9  ->  pb9.txt
+    10  ->  pb10.txt
+    11  ->  pb11.txt
+    12  ->  pb12.txt
+     0  ->  Quitter
+
+  Choisissez un probleme (0-12) : 4
+
+  Fichier charge : pb4.txt  (2 x 2)
+
+============================================================
+  Dimensions  : 2 fournisseurs  x  2 clients
+  Provisions  : [600, 500]   somme = 1100
+  Commandes   : [100, 1000]   somme = 1100
+============================================================
+
+  Choisissez l'algorithme pour fixer la proposition initiale :
+    1  ->  Nord-Ouest
+    2  ->  Balas-Hammer
+    0  ->  Changer de probleme
+
+  Votre choix : 2
+
+----------
+   ALGORITHME DE BALAS-HAMMER
+----------
+
+  --- Etape 1 ----------------------------------------
+
+  Penalites des lignes actives :
+    P1    provision=600     penalite = 29
+    P2    provision=500     penalite = 29
+  Penalites des colonnes actives :
+    C1    commande= 100     penalite = 29
+    C2    commande= 1000    penalite = 29
+
+  Penalite maximale = 29
+  Ligne(s) a penalite maximale   : P1  P2
+  Colonne(s) a penalite maximale : C1  C2
+  --> Arete choisie : (P1, C2)   cout unitaire = 1
+      Quantite affectee = 600
+      Provision restante P1 = 0   Commande restante C2 = 400
+      P1 epuisee  ->  ligne desactivee
+
+  --- Etape 2 ----------------------------------------
+
+  Penalites des lignes actives :
+    P2    provision=500     penalite = 29
+  Penalites des colonnes actives :
+    C1    commande= 100     penalite = 1
+    C2    commande= 400     penalite = 30
+
+  Penalite maximale = 30
+  Colonne(s) a penalite maximale : C2
+  --> Arete choisie : (P2, C2)   cout unitaire = 30
+      Quantite affectee = 400
+      Provision restante P2 = 100   Commande restante C2 = 0
+      C2 epuisee  ->  colonne desactivee
+
+  --- Etape 3 ----------------------------------------
+
+  Penalites des lignes actives :
+    P2    provision=100     penalite = 1
+  Penalites des colonnes actives :
+    C1    commande= 100     penalite = 1
+
+  Penalite maximale = 1
+  Ligne(s) a penalite maximale   : P2
+  Colonne(s) a penalite maximale : C1
+  --> Arete choisie : (P2, C1)   cout unitaire = 1
+      Quantite affectee = 100
+      Provision restante P2 = 0   Commande restante C1 = 0
+
+  Proposition Balas-Hammer construite.
+
+
+  Elements disponibles pour ce probleme :
+    1  ->  Matrice des couts
+    2  ->  Proposition de transport + cout total
+    3  ->  Lancer le marche-pied complet (jusqu'a l'optimal)
+    0  ->  Changer de probleme
+
+  Votre choix : 3
+
+        MATRICE DES COUTS        
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      30    1       600    
+    P2      1     30      500    
+---------------------------------
+           100   1000            
+
+
+PROPOSITION INITIALE  (Balas-Hammer)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    600      600    
+    P2     100   400      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=   1  x  qte=  600   =      600
+  (P2, C1)   :   cout=   1  x  qte=  100   =      100
+  (P2, C2)   :   cout=  30  x  qte=  400   =    12000
+  --------------------------------------------
+  Cout total   Z  =  12700
+
+
+============================================================
+  METHODE DU MARCHE-PIED AVEC POTENTIEL
+============================================================
+
+  ========================================================
+  ITERATION 1
+  ========================================================
+
+PROPOSITION COURANTE  (iteration 1)
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    600      600    
+    P2     100   400      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=   1  x  qte=  600   =      600
+  (P2, C1)   :   cout=   1  x  qte=  100   =      100
+  (P2, C2)   :   cout=  30  x  qte=  400   =    12000
+  --------------------------------------------
+  Cout total   Z  =  12700
+
+  [1] Test d'acyclicite :
+  La proposition est acyclique.
+
+  [2] Test de connexite :
+  La proposition est connexe.
+
+  [3] Calcul des potentiels :
+  Potentiels u : u1=0  u2=29
+  Potentiels v : v1=-28  v2=1
+
+  [4] Table des couts potentiels :
+
+TABLE DES COUTS POTENTIELS  ( u_i + v_j )
+--------------------------
+           v1=-28   v2=1  
+--------------------------
+   u1=0     -28     [1]   
+  u2=29     [1]     [30]  
+
+  Legende : [val] = case de base
+
+  [5] Table des couts marginaux :
+
+TABLE DES COUTS MARGINAUX  ( a_ij - u_i - v_j )
+--------------------------
+             C1      C2   
+--------------------------
+    P1       58    [BASE] 
+    P2     [BASE]  [BASE] 
+
+  Legende : [BASE] = case de base  |  >>val<< = meilleure arete ameliorante
+
+  OK : Aucun cout marginal negatif  -->  solution OPTIMALE.
+
+
+  --> Solution OPTIMALE atteinte a l'iteration 1
+
+============================================================
+  PROPOSITION OPTIMALE FINALE
+============================================================
+
+       PROPOSITION OPTIMALE      
+---------------------------------
+            C1    C2   Provision 
+---------------------------------
+    P1      .    600      600    
+    P2     100   400      500    
+---------------------------------
+           100   1000            
+
+
+  CALCUL DU COUT TOTAL
+  --------------------------------------------
+  (P1, C2)   :   cout=   1  x  qte=  600   =      600
+  (P2, C1)   :   cout=   1  x  qte=  100   =      100
+  (P2, C2)   :   cout=  30  x  qte=  400   =    12000
+  --------------------------------------------
+  Cout total   Z  =  12700
