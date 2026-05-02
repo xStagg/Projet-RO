@@ -251,12 +251,12 @@ def tracer_nuage_points(donnees):
     """
     Trace le nuage de points avec jitter.
     Séries tracées (conformément à la section 3.3.3 du projet) :
-      - θ_NO(n)  : temps de l'algorithme Nord-Ouest seul
-      - θ_BH(n)  : temps de l'algorithme Balas-Hammer seul
-      - t_MPNO(n): temps du marche-pied initialisé par Nord-Ouest
-      - t_MPBH(n): temps du marche-pied initialisé par Balas-Hammer
-      - (θ_NO + t_MPNO)(n) : temps total côté Nord-Ouest
-      - (θ_BH + t_MPBH)(n) : temps total côté Balas-Hammer
+      - t_NO(n)  : temps de l'algorithme Nord-Ouest seul
+      - t_BH(n)  : temps de l'algorithme Balas-Hammer seul
+      - \theta_{MPNO}(n): temps du marche-pied initialisé par Nord-Ouest
+      - \theta_{MPBH}(n): temps du marche-pied initialisé par Balas-Hammer
+      - (t_NO + \theta_{MPNO})(n) : temps total côté Nord-Ouest
+      - (t_BH + \theta_{MPBH})(n) : temps total côté Balas-Hammer
     """
     if not donnees:
         print("Aucune donnée à tracer")
@@ -270,10 +270,10 @@ def tracer_nuage_points(donnees):
     series = [
         ('t_NO',   'red',    '$t_{NO}(n)$',           None),
         ('t_BH',   'green',  '$t_{BH}(n)$',           None),
-        ('t_MPNO', 'blue',   '$t_{MPNO}(n)$',         None),
-        ('t_MPBH', 'orange', '$t_{MPBH}(n)$',         None),
-        ('sum_NO', 'darkred',    r'$(\theta_{NO}+t_{MPNO})(n)$', '+'),
-        ('sum_BH', 'darkgreen',  r'$(\theta_{BH}+t_{MPBH})(n)$', 'x'),
+        ('t_MPNO', 'blue',   r'$\theta_{MPNO}(n)$',         None),
+        ('t_MPBH', 'orange', r'$\theta_{MPBH}(n)$',         None),
+        ('sum_NO', 'darkred',    r'$(t_{NO}+\theta_{MPNO})(n)$', '+'),
+        ('sum_BH', 'darkgreen',  r'$(t_{BH}+\theta_{MPBH})(n)$', 'x'),
     ]
     
     n_sorted = sorted(donnees.keys())
@@ -324,7 +324,7 @@ def tracer_nuage_points(donnees):
 def tracer_enveloppes_superieures(donnees):
     """
     Trace les enveloppes supérieures (pire cas) conformément à la section 3.3.4.
-    Séries : θ_NO, θ_BH, t_MPNO, t_MPBH, (θ_NO+t_MPNO), (θ_BH+t_MPBH).
+    Séries : t_NO, t_BH, \theta_{MPNO}, \theta_{MPBH}, (t_NO+\theta_{MPNO}), (t_BH+\theta_{MPBH}).
     """
     if not donnees:
         return None
@@ -332,12 +332,12 @@ def tracer_enveloppes_superieures(donnees):
     fig, ax = plt.subplots(figsize=(12, 8))
     
     series = [
-        ('t_NO',   r'$\theta_{NO}(n)$',              'o', 'red'),
-        ('t_BH',   r'$\theta_{BH}(n)$',              's', 'green'),
-        ('t_MPNO', r'$t_{MPNO}(n)$',                 '^', 'blue'),
-        ('t_MPBH', r'$t_{MPBH}(n)$',                 'v', 'orange'),
-        ('sum_NO', r'$(\theta_{NO}+t_{MPNO})(n)$',   'D', 'darkred'),
-        ('sum_BH', r'$(\theta_{BH}+t_{MPBH})(n)$',   'P', 'darkgreen'),
+        ('t_NO',   r'$t_{NO}(n)$',              'o', 'red'),
+        ('t_BH',   r'$t_{BH}(n)$',              's', 'green'),
+        ('t_MPNO', r'$\theta_{MPNO}(n)$',                 '^', 'blue'),
+        ('t_MPBH', r'$\theta_{MPBH}(n)$',                 'v', 'orange'),
+        ('sum_NO', r'$(t_{NO}+\theta_{MPNO})(n)$',   'D', 'darkred'),
+        ('sum_BH', r'$(t_{BH}+\theta_{MPBH})(n)$',   'P', 'darkgreen'),
     ]
     
     for key, label, marker, color in series:
@@ -382,7 +382,7 @@ def tracer_enveloppes_superieures(donnees):
 
 def tracer_rapport_comparaison(donnees):
     """
-    Trace R(n) = (θ_NO + t_MPNO) / (θ_BH + t_MPBH) conformément à la section 3.3.5.
+    Trace R(n) = (t_NO + \theta_{MPNO}) / (t_BH + \theta_{MPBH}) conformément à la section 3.3.5.
     Affiche le nuage de points de toutes les réalisations + l'enveloppe supérieure (pire cas).
     """
     if not donnees:
@@ -433,7 +433,7 @@ def tracer_rapport_comparaison(donnees):
     # est plus lisible pour interpréter le rapport autour de 1.
     ax.set_xlabel('n (taille du problème)', fontsize=12)
     ax.set_ylabel(
-        r'$R(n) = \dfrac{\theta_{NO} + t_{MPNO}}{\theta_{BH} + t_{MPBH}}$',
+        r'$R(n) = \dfrac{t_{NO} + \theta_{MPNO}}{t_{BH} + \theta_{MPBH}}$',
         fontsize=14
     )
     ax.set_title('Comparaison Nord-Ouest vs Balas-Hammer', fontsize=14)
@@ -457,7 +457,7 @@ def afficher_resultats(donnees):
     print("RÉSULTATS DES MESURES DE COMPLEXITÉ")
     print("="*80)
     
-    print(f"\n{'n':>6} | {'itérations':>10} | {'θ_NO (s)':>12} | {'θ_BH (s)':>12} | {'t_MPNO (s)':>12} | {'t_MPBH (s)':>12} | {'θ_NO+t_MPNO':>14} | {'θ_BH+t_MPBH':>14}")
+    print(f"\n{'n':>6} | {'itérations':>10} | {'t_NO (s)':>12} | {'t_BH (s)':>12} | {'θ_MPNO (s)':>12} | {'θ_MPBH (s)':>12} | {'t_NO+θ_MPNO':>14} | {'t_BH+θ_MPBH':>14}")
     print("-" * 100)
     
     for n in sorted(donnees.keys()):
