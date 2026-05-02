@@ -268,12 +268,12 @@ def tracer_nuage_points(donnees):
     # Clé interne -> (couleur, label affiché, style de marqueur)
     # Les algorithmes d'initialisation sont θ (pas t) selon la nomenclature du projet
     series = [
-        ('t_NO',   'red',    '$t_{NO}(n)$',           None),
-        ('t_BH',   'green',  '$t_{BH}(n)$',           None),
-        ('t_MPNO', 'blue',   r'$\theta_{MPNO}(n)$',         None),
-        ('t_MPBH', 'orange', r'$\theta_{MPBH}(n)$',         None),
-        ('sum_NO', 'darkred',    r'$(t_{NO}+\theta_{MPNO})(n)$', '+'),
-        ('sum_BH', 'darkgreen',  r'$(t_{BH}+\theta_{MPBH})(n)$', 'x'),
+        ('t_NO',   'red',    r'$\theta_{NO}(n)$',           None),
+        ('t_BH',   'green',  r'$\theta_{BH}(n)$',           None),
+        ('t_MPNO', 'blue',   '$t_{NO}(n)$',         None),
+        ('t_MPBH', 'orange', '$t_{BH}(n)$',         None),
+        ('sum_NO', 'darkred',    r'$(\theta_{NO}+t_{NO})(n)$', '+'),
+        ('sum_BH', 'darkgreen',  r'$(\theta_{BH}+t_{BH})(n)$', 'x'),
     ]
     
     n_sorted = sorted(donnees.keys())
@@ -332,12 +332,12 @@ def tracer_enveloppes_superieures(donnees):
     fig, ax = plt.subplots(figsize=(12, 8))
     
     series = [
-        ('t_NO',   r'$t_{NO}(n)$',              'o', 'red'),
-        ('t_BH',   r'$t_{BH}(n)$',              's', 'green'),
-        ('t_MPNO', r'$\theta_{MPNO}(n)$',                 '^', 'blue'),
-        ('t_MPBH', r'$\theta_{MPBH}(n)$',                 'v', 'orange'),
-        ('sum_NO', r'$(t_{NO}+\theta_{MPNO})(n)$',   'D', 'darkred'),
-        ('sum_BH', r'$(t_{BH}+\theta_{MPBH})(n)$',   'P', 'darkgreen'),
+        ('t_NO',   r'$\theta_{NO}(n)$',              'o', 'red'),
+        ('t_BH',   r'$\theta_{BH}(n)$',              's', 'green'),
+        ('t_MPNO', '$t_{NO}(n)$',                 '^', 'blue'),
+        ('t_MPBH', '$t_{BH}(n)$',                 'v', 'orange'),
+        ('sum_NO', r'$(\theta_{NO}+t_{NO})(n)$',   'D', 'darkred'),
+        ('sum_BH', r'$(\theta_{BH}+t_{BH})(n)$',   'P', 'darkgreen'),
     ]
     
     for key, label, marker, color in series:
@@ -433,7 +433,7 @@ def tracer_rapport_comparaison(donnees):
     # est plus lisible pour interpréter le rapport autour de 1.
     ax.set_xlabel('n (taille du problème)', fontsize=12)
     ax.set_ylabel(
-        r'$R(n) = \dfrac{t_{NO} + \theta_{MPNO}}{t_{BH} + \theta_{MPBH}}$',
+        r'$R(n) = \dfrac{\theta_{NO} + t_{NO}}{\theta_{BH} + t_{BH}}$',
         fontsize=14
     )
     ax.set_title('Comparaison Nord-Ouest vs Balas-Hammer', fontsize=14)
