@@ -34,27 +34,27 @@ def verifier_memoire_disponible():
         return {
             'max_n': 100,
             'iterations_defaut': 20,
-            'iterations_par_n': {10: 50, 40: 30, 100: 10}
+            'iterations_par_n': {10: 100, 40: 100, 100: 100,  400: 100}
         }
     elif ram_total < 16:
         print("✅ Configuration: Mémoire moyenne (8-16 Go)")
         return {
             'max_n': 400,
             'iterations_defaut': 30,
-            'iterations_par_n': {10: 100, 40: 50, 100: 20, 400: 8}
+            'iterations_par_n': {10: 100, 40: 100, 100: 100, 400: 100}
         }
     else:
         print("🚀 Configuration: Haute mémoire (>16 Go)")
         return {
             'max_n': 1000,
             'iterations_defaut': 50,
-            'iterations_par_n': {10: 100, 40: 100, 100: 50, 400: 15, 1000: 5}
+            'iterations_par_n': {10: 100, 40: 100, 100: 100, 400: 100}
         }
 
 # Détection automatique
 CONFIG = verifier_memoire_disponible()
 MAX_N = CONFIG['max_n']
-N_VALUES = [10, 40, 100, 400, 1000, 4000, 10000]
+N_VALUES = [10, 40, 100, 400]
 N_VALUES = [n for n in N_VALUES if n <= MAX_N]
 
 print(f"\n📊 Tailles à tester: {N_VALUES}")
@@ -248,8 +248,16 @@ def mesurer_avec_reprise():
 # ============================================================================
 
 def tracer_nuage_points(donnees):
-    """Trace le nuage de points avec jitter"""
-    
+    """
+    Trace le nuage de points avec jitter.
+    Séries tracées (conformément à la section 3.3.3 du projet) :
+      - θ_NO(n)  : temps de l'algorithme Nord-Ouest seul
+      - θ_BH(n)  : temps de l'algorithme Balas-Hammer seul
+      - t_MPNO(n): temps du marche-pied initialisé par Nord-Ouest
+      - t_MPBH(n): temps du marche-pied initialisé par Balas-Hammer
+      - (θ_NO + t_MPNO)(n) : temps total côté Nord-Ouest
+      - (θ_BH + t_MPBH)(n) : temps total côté Balas-Hammer
+    """
     if not donnees:
         print("Aucune donnée à tracer")
         return None
@@ -257,26 +265,52 @@ def tracer_nuage_points(donnees):
     fig, ax = plt.subplots(figsize=(12, 8))
     rng = np.random.default_rng(42)
     
-    couleurs = {
-        't_NO': ('red', '$t_{NO}(n)$'),
-        't_BH': ('green', '$t_{BH}(n)$'),
-        't_MPNO': ('blue', '$t_{MPNO}(n)$'),
-        't_MPBH': ('orange', '$t_{MPBH}(n)$')
-    }
+    # Clé interne -> (couleur, label affiché, style de marqueur)
+    # Les algorithmes d'initialisation sont θ (pas t) selon la nomenclature du projet
+    series = [
+        ('t_NO',   'red',    '$t_{NO}(n)$',           None),
+        ('t_BH',   'green',  '$t_{BH}(n)$',           None),
+        ('t_MPNO', 'blue',   '$t_{MPNO}(n)$',         None),
+        ('t_MPBH', 'orange', '$t_{MPBH}(n)$',         None),
+        ('sum_NO', 'darkred',    r'$(\theta_{NO}+t_{MPNO})(n)$', '+'),
+        ('sum_BH', 'darkgreen',  r'$(\theta_{BH}+t_{MPBH})(n)$', 'x'),
+    ]
     
-    for n in donnees:
-        for key, (couleur, label) in couleurs.items():
-            temps = donnees[n][key]
-            if temps:
-                x_vals = np.full(len(temps), n)
-                # Jitter multiplicatif
-                x_jitter = x_vals * np.exp(rng.uniform(-0.03, 0.03, size=len(x_vals)))
-                ax.scatter(x_jitter, temps, c=couleur, s=8, alpha=0.5, label=label if n == list(donnees.keys())[0] else "")
+    n_sorted = sorted(donnees.keys())
+    premiere_n = n_sorted[0]
+    
+    for n in n_sorted:
+        d = donnees[n]
+        t_no   = np.array(d['t_NO'])
+        t_bh   = np.array(d['t_BH'])
+        t_mpno = np.array(d['t_MPNO'])
+        t_mpbh = np.array(d['t_MPBH'])
+        
+        # Calcul des sommes si les longueurs correspondent
+        k = min(len(t_no), len(t_bh), len(t_mpno), len(t_mpbh))
+        sums = {
+            't_NO':   t_no[:k],
+            't_BH':   t_bh[:k],
+            't_MPNO': t_mpno[:k],
+            't_MPBH': t_mpbh[:k],
+            'sum_NO': t_no[:k] + t_mpno[:k],
+            'sum_BH': t_bh[:k] + t_mpbh[:k],
+        }
+        
+        for key, couleur, label, marker in series:
+            vals = sums.get(key, [])
+            if len(vals) == 0:
+                continue
+            x_vals = np.full(len(vals), n)
+            x_jitter = x_vals * np.exp(rng.uniform(-0.03, 0.03, size=len(vals)))
+            mk = marker if marker else 'o'
+            ax.scatter(x_jitter, vals, c=couleur, s=8, alpha=0.5, marker=mk,
+                       label=label if n == premiere_n else "")
     
     ax.set_xscale('log')
     ax.set_yscale('log')
     ax.set_xlabel('n (taille du problème)', fontsize=12)
-    ax.set_ylabel('Temps d\'exécution (s)', fontsize=12)
+    ax.set_ylabel("Temps d'exécution (s)", fontsize=12)
     ax.set_title('Nuages de points des temps mesurés', fontsize=14)
     ax.legend(loc='upper left', fontsize=10)
     ax.grid(True, alpha=0.3, linestyle='--')
@@ -288,35 +322,54 @@ def tracer_nuage_points(donnees):
     return fig
 
 def tracer_enveloppes_superieures(donnees):
-    """Trace les enveloppes supérieures (pire cas)"""
-    
+    """
+    Trace les enveloppes supérieures (pire cas) conformément à la section 3.3.4.
+    Séries : θ_NO, θ_BH, t_MPNO, t_MPBH, (θ_NO+t_MPNO), (θ_BH+t_MPBH).
+    """
     if not donnees:
         return None
     
     fig, ax = plt.subplots(figsize=(12, 8))
     
-    for key, label, marker, color in [
-        ('t_NO', '$\\theta_{NO}(n)$', 'o', 'red'),
-        ('t_BH', '$\\theta_{BH}(n)$', 's', 'green'),
-        ('t_MPNO', '$t_{MPNO}(n)$', '^', 'blue'),
-        ('t_MPBH', '$t_{MPBH}(n)$', 'v', 'orange')
-    ]:
+    series = [
+        ('t_NO',   r'$\theta_{NO}(n)$',              'o', 'red'),
+        ('t_BH',   r'$\theta_{BH}(n)$',              's', 'green'),
+        ('t_MPNO', r'$t_{MPNO}(n)$',                 '^', 'blue'),
+        ('t_MPBH', r'$t_{MPBH}(n)$',                 'v', 'orange'),
+        ('sum_NO', r'$(\theta_{NO}+t_{MPNO})(n)$',   'D', 'darkred'),
+        ('sum_BH', r'$(\theta_{BH}+t_{MPBH})(n)$',   'P', 'darkgreen'),
+    ]
+    
+    for key, label, marker, color in series:
         n_vals = []
         max_vals = []
         for n in sorted(donnees.keys()):
-            temps = donnees[n][key]
-            if temps:
+            d = donnees[n]
+            if key == 'sum_NO':
+                t_no   = np.array(d['t_NO'])
+                t_mpno = np.array(d['t_MPNO'])
+                k = min(len(t_no), len(t_mpno))
+                vals = (t_no[:k] + t_mpno[:k]).tolist()
+            elif key == 'sum_BH':
+                t_bh   = np.array(d['t_BH'])
+                t_mpbh = np.array(d['t_MPBH'])
+                k = min(len(t_bh), len(t_mpbh))
+                vals = (t_bh[:k] + t_mpbh[:k]).tolist()
+            else:
+                vals = d[key]
+            
+            if vals:
                 n_vals.append(n)
-                max_vals.append(max(temps))
+                max_vals.append(max(vals))
         
         if n_vals:
-            ax.plot(n_vals, max_vals, marker=marker, color=color, linewidth=2, 
-                   markersize=8, label=f'{label} (pire cas)')
+            ax.plot(n_vals, max_vals, marker=marker, color=color, linewidth=2,
+                    markersize=8, label=f'{label} (pire cas)')
     
     ax.set_xscale('log')
     ax.set_yscale('log')
     ax.set_xlabel('n (taille du problème)', fontsize=12)
-    ax.set_ylabel('Temps d\'exécution (s) - Pire cas', fontsize=12)
+    ax.set_ylabel("Temps d'exécution (s) - Pire cas", fontsize=12)
     ax.set_title('Enveloppes supérieures - Complexité dans le pire des cas', fontsize=14)
     ax.legend(loc='upper left', fontsize=10)
     ax.grid(True, alpha=0.3, linestyle='--')
@@ -328,8 +381,10 @@ def tracer_enveloppes_superieures(donnees):
     return fig
 
 def tracer_rapport_comparaison(donnees):
-    """Trace le rapport (NO+MPNO)/(BH+MPBH)"""
-    
+    """
+    Trace R(n) = (θ_NO + t_MPNO) / (θ_BH + t_MPBH) conformément à la section 3.3.5.
+    Affiche le nuage de points de toutes les réalisations + l'enveloppe supérieure (pire cas).
+    """
     if not donnees:
         return None
     
@@ -340,29 +395,47 @@ def tracer_rapport_comparaison(donnees):
     n_vals_pire = []
     
     for n in sorted(donnees.keys()):
-        t_NO = np.array(donnees[n]['t_NO'])
-        t_BH = np.array(donnees[n]['t_BH'])
-        t_MPNO = np.array(donnees[n]['t_MPNO'])
-        t_MPBH = np.array(donnees[n]['t_MPBH'])
+        d = donnees[n]
+        t_NO   = np.array(d['t_NO'])
+        t_BH   = np.array(d['t_BH'])
+        t_MPNO = np.array(d['t_MPNO'])
+        t_MPBH = np.array(d['t_MPBH'])
         
-        if len(t_NO) > 0:
-            rapport = (t_NO + t_MPNO) / (t_BH + t_MPBH)
-            
-            # Nuage de points
-            x_jitter = np.full(len(rapport), n) * np.exp(rng.uniform(-0.03, 0.03, size=len(rapport)))
-            ax.scatter(x_jitter, rapport, c='purple', s=8, alpha=0.3)
-            
-            # Pire cas
-            rapports_pire.append(max(rapport))
-            n_vals_pire.append(n)
+        k = min(len(t_NO), len(t_BH), len(t_MPNO), len(t_MPBH))
+        if k == 0:
+            continue
+        
+        denominateur = t_BH[:k] + t_MPBH[:k]
+        # Éviter la division par zéro
+        masque = denominateur > 0
+        if not np.any(masque):
+            continue
+        
+        rapport = (t_NO[:k][masque] + t_MPNO[:k][masque]) / denominateur[masque]
+        
+        # Nuage de points
+        x_vals = np.full(len(rapport), n)
+        x_jitter = x_vals * np.exp(rng.uniform(-0.03, 0.03, size=len(rapport)))
+        ax.scatter(x_jitter, rapport, c='purple', s=8, alpha=0.3)
+        
+        # Pire cas (enveloppe supérieure)
+        rapports_pire.append(max(rapport))
+        n_vals_pire.append(n)
     
-    ax.plot(n_vals_pire, rapports_pire, 'ro-', linewidth=2, markersize=8, 
-            label='Pire cas par taille n')
+    if n_vals_pire:
+        ax.plot(n_vals_pire, rapports_pire, 'ro-', linewidth=2, markersize=8,
+                label='Pire cas par taille n')
+    
     ax.axhline(y=1, color='k', linestyle='--', alpha=0.5, label='Équivalence')
     
     ax.set_xscale('log')
+    # Pas d'échelle log sur Y : les valeurs de R peuvent être < 1 et l'échelle linéaire
+    # est plus lisible pour interpréter le rapport autour de 1.
     ax.set_xlabel('n (taille du problème)', fontsize=12)
-    ax.set_ylabel('$R(n) = \\frac{\\theta_{NO} + t_{MPNO}}{\\theta_{BH} + t_{MPBH}}$', fontsize=14)
+    ax.set_ylabel(
+        r'$R(n) = \dfrac{\theta_{NO} + t_{MPNO}}{\theta_{BH} + t_{MPBH}}$',
+        fontsize=14
+    )
     ax.set_title('Comparaison Nord-Ouest vs Balas-Hammer', fontsize=14)
     ax.legend(loc='best', fontsize=10)
     ax.grid(True, alpha=0.3, linestyle='--')
@@ -384,18 +457,22 @@ def afficher_resultats(donnees):
     print("RÉSULTATS DES MESURES DE COMPLEXITÉ")
     print("="*80)
     
-    print(f"\n{'n':>6} | {'itérations':>10} | {'θ_NO (s)':>12} | {'θ_BH (s)':>12} | {'t_MPNO (s)':>12} | {'t_MPBH (s)':>12}")
-    print("-" * 70)
+    print(f"\n{'n':>6} | {'itérations':>10} | {'θ_NO (s)':>12} | {'θ_BH (s)':>12} | {'t_MPNO (s)':>12} | {'t_MPBH (s)':>12} | {'θ_NO+t_MPNO':>14} | {'θ_BH+t_MPBH':>14}")
+    print("-" * 100)
     
     for n in sorted(donnees.keys()):
         nb_iter = len(donnees[n]['t_NO'])
         if nb_iter > 0:
-            moy_NO = np.mean(donnees[n]['t_NO'])
-            moy_BH = np.mean(donnees[n]['t_BH'])
+            moy_NO   = np.mean(donnees[n]['t_NO'])
+            moy_BH   = np.mean(donnees[n]['t_BH'])
             moy_MPNO = np.mean(donnees[n]['t_MPNO'])
             moy_MPBH = np.mean(donnees[n]['t_MPBH'])
+            k = min(len(donnees[n]['t_NO']), len(donnees[n]['t_MPNO']))
+            moy_sum_NO = np.mean(np.array(donnees[n]['t_NO'][:k]) + np.array(donnees[n]['t_MPNO'][:k]))
+            k2 = min(len(donnees[n]['t_BH']), len(donnees[n]['t_MPBH']))
+            moy_sum_BH = np.mean(np.array(donnees[n]['t_BH'][:k2]) + np.array(donnees[n]['t_MPBH'][:k2]))
             
-            print(f"{n:6d} | {nb_iter:10d} | {moy_NO:12.6f} | {moy_BH:12.6f} | {moy_MPNO:12.6f} | {moy_MPBH:12.6f}")
+            print(f"{n:6d} | {nb_iter:10d} | {moy_NO:12.6f} | {moy_BH:12.6f} | {moy_MPNO:12.6f} | {moy_MPBH:12.6f} | {moy_sum_NO:14.6f} | {moy_sum_BH:14.6f}")
     
     print("\n" + "="*80)
 
